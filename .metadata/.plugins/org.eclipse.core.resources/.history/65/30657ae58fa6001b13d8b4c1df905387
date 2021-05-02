@@ -1,0 +1,18 @@
+package com.example.demo.mapper;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import com.example.demo.pojo.Product;
+
+@Mapper
+public interface ProductMapper {
+	Product getProductById(Integer id);
+	
+	void deleteProductById(Integer id);
+	
+	void updateProduct(Product product);
+	
+	void insertProduct(Product product);
+	
+	void mergeProdAndFac(int prod_id, int fac_id);
+}

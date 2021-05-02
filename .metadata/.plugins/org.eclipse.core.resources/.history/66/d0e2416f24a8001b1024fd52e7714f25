@@ -1,0 +1,15 @@
+package com.example.demo.service;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+
+import com.example.demo.pojo.Result;
+
+public interface DeviceService {
+	Result<String> addDeviceToFactory(HttpServletRequest request);
+	
+	Result<Map<String, String>> findDeviceinfo(HttpServletRequest request);
+}

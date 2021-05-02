@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.UserMapper">
+	
+	<delete id="deleteUserById" parameterType="Integer">
+        delete from user where user_id=#{id}
+    </delete>
+	
+	
+	<select id="getUserById" parameterType="Integer" resultType="com.example.demo.pojo.User">
+		select * from user where user_id=#{id}
+  	</select>
+
+
+	<select id="getUserByName" parameterType="String" resultType="com.example.demo.pojo.User">
+		select * from user where username=#{name}
+	</select>
+	
+	
+	<select id="findPswByName" parameterType="String" resultType="String">
+		select password from user where username=#{name}
+	</select>
+
+
+    <update id="updateUser" parameterType="com.example.demo.pojo.User">
+        update user set
+        nickname=#{nickname},
+        username=#{username},
+        email=#{email},
+        password=#{password},
+        usertype=#{usertype},
+        telephone=#{telephone}
+        where user_id=#{user_id}
+    </update>
+
+
+    <insert id="insertUser" parameterType="com.example.demo.pojo.User" 
+			keyProperty="user_id" useGeneratedKeys="true">
+        insert into user(nickname,username,password,email,usertype,telephone)
+        values(#{nickname},#{username},#{password},#{email},#{usertype},#{telephone})
+    </insert>
+</mapper>

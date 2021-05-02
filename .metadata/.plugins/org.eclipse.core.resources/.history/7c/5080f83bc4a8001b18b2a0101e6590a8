@@ -1,0 +1,224 @@
+package com.example.demo.service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.demo.mapper.DeviceMapper;
+import com.example.demo.myexcept.MyExceptionHandler;
+import com.example.demo.pojo.DValueEnum;
+import com.example.demo.pojo.Device;
+import com.example.demo.pojo.MyCommonFunc;
+import com.example.demo.pojo.PageRequest;
+import com.example.demo.pojo.PageResult;
+import com.example.demo.pojo.PageUtil;
+import com.example.demo.pojo.Result;
+import com.example.demo.pojo.ResultUtil;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+
+@Service
+public class DeviceServiceImpl implements DeviceService {
+	
+	
+	@Autowired
+	DeviceMapper deviceMapper;
+	
+	
+	@Override
+	public Result<Map<String, String>> findDeviceinfo(HttpServletRequest request) {
+		int fac_id = Integer.parseInt(request.getSession().
+				getAttribute(DValueEnum.CHECKED_FACTORY_ID.getValue()).toString());
+		
+		List<Device> deviceList = deviceMapper.findDevicesByFacId(fac_id);
+		Map<String, String> deviceMaps = new HashMap<String, String>();
+		
+		if (deviceList == null) {
+			return ResultUtil.data_not_foundRes(null);
+		} else {
+			for (Device item : deviceList) {
+				deviceMaps.put(item.getDevname(), item.getDev_num().toString());
+			}
+			
+			return ResultUtil.successRes(deviceMaps);
+		}
+	}
+	
+	
+	@Override
+	public Result<String> addDeviceToFactory(HttpServletRequest request) {
+		try {
+			int fac_id = Integer.parseInt(request.getSession().
+					getAttribute(DValueEnum.CHECKED_FACTORY_ID.getValue()).toString());
+			String dname = request.getParameter("dname");
+			int num = Integer.parseInt(request.getParameter("number"));
+			int dev_id = deviceMapper.findDevIdByName(dname);
+			//检测数据合法性
+			if (num < 0 || num > 100) {
+				return ResultUtil.invalid_data("非法数据");
+			}
+					
+			Device device = deviceMapper.findDeviceByFacAndDevId(fac_id, dev_id);
+			
+			//如果工厂内没有该设备
+			if (device == null) {
+				device = new Device(dname, num, dev_id);
+				device.setFac_id(fac_id);
+				deviceMapper.insertDevice(device);
+			} else {
+				//如果已经有该设备，则增加相应数量
+				int tmpnum = device.getDev_num();
+				System.out.println(device.toString());
+				System.out.println(num);
+				device.setDev_num(tmpnum + num);
+				deviceMapper.updateDevice(device);
+			}
+					
+			return ResultUtil.successRes();
+		} catch (Exception e) {
+			MyExceptionHandler.takeLog(e);
+			return ResultUtil.data_not_foundRes("未找到对应设备");
+		}
+	}
+	
+	
+	@Override
+	public PageResult getDevicesOnPageByFacId(PageRequest pageRequest, HttpServletRequest request) {
+		return PageUtil.getPageResult(pageRequest, getDevicesInfoByFacId(pageRequest, request));
+	}
+	
+	
+	private PageInfo<Device> getDevicesInfoByFacId(PageRequest pageRequest, HttpServletRequest request) {
+		try {
+			HttpSession session = request.getSession();
+			int pageNum = pageRequest.getPageNum();
+			int pageSize = pageRequest.getPageSize();
+			int fac_id = Integer.parseInt(session.getAttribute(DValueEnum.CHECKED_FACTORY_ID.getValue()).toString());
+			
+			
+			if (pageNum <= 0 || pageSize <= 0) {
+				throw new IllegalArgumentException("非法分页数据");
+			}
+			
+			PageHelper.startPage(pageNum, pageSize);
+			List<Device> devicesList = deviceMapper.getDeviceByFacIdOnPage(fac_id);
+			
+			for (Device item : devicesList) {
+				System.out.println(item.toString());
+			}
+			
+			return new PageInfo<Device>(devicesList);
+		} catch (Exception e) {
+			MyExceptionHandler.takeLog(e);
+			return null;
+		}
+	}
+	
+	
+	@Override
+	public Result<String> selectedDeviceSession(HttpServletRequest request) {
+		String fac_id = request.getParameter("factory_id");
+		String devname = request.getParameter("devname");
+		HttpSession session = request.getSession();
+		
+		if (Integer.parseInt(fac_id) < 0 || fac_id == null || devname == null) {
+			return ResultUtil.invalid_data("非法数据");
+		}
+		
+		Integer dev_id = deviceMapper.findDevIdByFacIdAndDevName(Integer.parseInt(fac_id), devname);
+		
+		session.setAttribute(DValueEnum.CHECKED_DEVICE_ID.getValue(), dev_id);
+		
+		return ResultUtil.successRes();
+	}
+	
+	
+	@Override
+	public Result<String> delayStartProduce(HttpServletRequest request) {
+		Integer dev_id = Integer.parseInt(request.getSession().
+				getAttribute(DValueEnum.CHECKED_DEVICE_ID.getValue()).toString());
+		
+		if (dev_id == null || dev_id < 0) {
+			return ResultUtil.data_not_foundRes("未找到设备");
+		}
+		
+		
+		String rdname = MyCommonFunc.getRandomString(6);
+		String datestr = MyCommonFunc.getDelayDateOnSecond(45);	
+		String sqlstr = "CREATE EVENT " + rdname +"\n"
+				+ "ON SCHEDULE AT \""+ datestr + "\"\n"
+				+ "ON COMPLETION NOT PRESERVE\n"
+				+ "DO CALL start_produce(" + num.toString() + ");";
+		
+		
+		deviceMapper.delayStartProduce(sqlstr);
+		
+		return ResultUtil.successRes();
+	}
+	
+	
+	@Override
+	public Result<String> straightStartProduce(HttpServletRequest request) {
+		Integer dev_id = Integer.parseInt(request.getSession().
+				getAttribute(DValueEnum.CHECKED_DEVICE_ID.getValue()).toString());
+		
+		if (dev_id == null || dev_id < 0) {
+			return ResultUtil.data_not_foundRes("未找到设备");
+		}
+		
+		deviceMapper.updateDeviceStatusByDevId("进行中", dev_id);
+		
+		return ResultUtil.successRes();
+	}
+	
+	
+	@Override
+	public Result<String> delayStopProduce(HttpServletRequest request) {
+		Integer dev_id = Integer.parseInt(request.getSession().
+				getAttribute(DValueEnum.CHECKED_DEVICE_ID.getValue()).toString());
+		
+		if (dev_id == null || dev_id < 0) {
+			return ResultUtil.data_not_foundRes("未找到设备");
+		}
+		
+		
+		String rdname = MyCommonFunc.getRandomString(6);
+
+		String datestr = MyCommonFunc.getDelayDateOnSecond(45);
+		
+		
+		String sqlstr = "CREATE EVENT " + rdname +"\n"
+				+ "ON SCHEDULE AT \""+ datestr + "\"\n"
+				+ "ON COMPLETION NOT PRESERVE\n"
+				+ "DO CALL stop_produce(" + num.toString() + ");";
+		
+		
+		deviceMapper.delayStartProduce(sqlstr);
+		
+		
+		return ResultUtil.successRes();
+	}
+	
+	
+	@Override
+	public Result<String> straightStopProduce(HttpServletRequest request) {
+		Integer dev_id = Integer.parseInt(request.getSession().
+				getAttribute(DValueEnum.CHECKED_DEVICE_ID.getValue()).toString());
+		
+		if (dev_id == null || dev_id < 0) {
+			return ResultUtil.data_not_foundRes("未找到设备");
+		}
+		
+		deviceMapper.updateDeviceStatusByDevId("未运行", dev_id);
+		
+		return ResultUtil.successRes();
+	}
+	
+	
+}

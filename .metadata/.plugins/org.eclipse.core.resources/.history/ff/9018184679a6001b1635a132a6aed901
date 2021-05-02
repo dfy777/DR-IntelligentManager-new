@@ -1,0 +1,32 @@
+package com.example.demo.controller;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.example.demo.pojo.PageRequest;
+import com.example.demo.pojo.PageResult;
+import com.example.demo.service.OrderService;
+
+
+@Controller
+public class OrderController {
+	
+	@Autowired
+	OrderService orderService;
+	
+	@GetMapping("/home/factory/order/show")
+	public String factoryShowPage() {
+		return "order-list";
+	}
+	
+	@GetMapping("/home/factory/order/show/select_all")
+	@ResponseBody
+	public PageResult getAllOrderByPage(HttpServletRequest request) {
+		return orderService.getAllOrderisByPage(pageRequest, request);
+	}
+}

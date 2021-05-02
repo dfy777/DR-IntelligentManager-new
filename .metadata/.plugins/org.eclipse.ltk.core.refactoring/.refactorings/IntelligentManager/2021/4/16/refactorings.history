@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename compilation unit &apos;com.example.demo.pojo.PatternCheck.java&apos; to &apos;PatternUtil.java&apos;&#x0D;&#x0A;- Original project: &apos;IntelligentManager&apos;&#x0D;&#x0A;- Original element: &apos;com.example.demo.pojo.PatternCheck.java&apos;&#x0D;&#x0A;- Renamed element: &apos;com.example.demo.pojo.PatternUtil.java&apos;" description="Rename compilation unit &apos;PatternCheck.java&apos;" flags="2" id="org.eclipse.jdt.ui.rename.compilationunit" input="/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.example.demo.pojo{PatternCheck.java" name="PatternUtil.java" references="false" stamp="1618639063889" version="1.0"/>
+</session>

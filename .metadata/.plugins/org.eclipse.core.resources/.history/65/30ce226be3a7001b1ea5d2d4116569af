@@ -1,0 +1,24 @@
+package com.example.demo.mapper;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import com.example.demo.pojo.Device;
+
+import io.lettuce.core.dynamic.annotation.Param;
+
+@Mapper
+public interface DeviceMapper {
+	Device findDeviceById(Integer id);
+	
+	void deleteDeviceById(Integer id);
+	
+	void updateDevice(Device device);
+	
+	void insertDevice(Device device);
+	
+	int findDevIdByName(String name);
+	
+	Device findDeviceByFacAndDevId(@Param("fid")Integer fid, @Param("did")Integer did);
+	
+	int findDevNumByFacAndDevId(@Param("fid")Integer fid, @Param("did")Integer did);
+}

@@ -1,0 +1,32 @@
+package com.example.demo.service;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+
+import com.example.demo.pojo.PageRequest;
+import com.example.demo.pojo.PageResult;
+import com.example.demo.pojo.Result;
+
+public interface DeviceService {
+	Result<String> addDeviceToFactory(HttpServletRequest request);
+	
+	
+	/**
+	 * 查找当前工厂下的所有设备
+	 * @param request
+	 * @return
+	 */
+	Result<Map<String, String>> findDeviceinfo(HttpServletRequest request);
+	
+	
+	Result<String> delayStartProduce();
+	
+	
+	Result<String> delayStopProduce();
+	
+	
+	PageResult getDevicesOnPageByFacId(PageRequest pageRequest, HttpServletRequest request);
+}

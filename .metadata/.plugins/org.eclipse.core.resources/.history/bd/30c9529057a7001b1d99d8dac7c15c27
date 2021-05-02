@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.OrderMapper">
+    <delete id = "deleteOrderById" parameterType="Integer">
+        delete from bishe.order where order_id=#{id}
+    </delete>
+
+    <select id="getOrderById" parameterType="Integer" resultType="com.example.demo.pojo.Order">
+        select * from bishe.order where order_id=#{id}
+    </select>
+
+    <update id="updateOrder" parameterType="com.example.demo.pojo.Order">
+        update bishe.order set
+        fac_id=#{fac_id},
+        client_id=#{client_id},
+		prodplan_id=#{prodplan_id},
+		dev_id=#{dev_id},
+		prod_num=#{prod_num},
+		pay_status=#{pay_status},
+		price=#{price},
+        ord_name=#{ord_name},
+        description=#{description},
+        status=#{status},
+		status=#{pay_func},
+		status=#{status},
+		status=#{status},
+		status=#{status}
+        where order_id=#{order_id}
+    </update>
+
+
+    <insert id="insertOrder" parameterType="com.example.demo.pojo.Order" 
+			keyProperty="order_id" useGeneratedKeys="true">
+        insert into bishe.order(fac_id,client_id,prodplan_id,dev_id,prod_num,
+			ord_name,price,description,status,pay_status)
+        values(#{fac_id},#{client_id},#{prodplan_id},#{dev_id},#{prod_num},
+			#{ord_name},#{price},#{description},#{status},#{pay_status})
+    </insert>
+
+	<select id="getOrderByFacIdOnPage" parameterType="Integer" 
+			resultType="com.example.demo.pojo.Order">
+		select * from bishe.order where fac_id=#{id}
+	</select>
+	
+
+</mapper>

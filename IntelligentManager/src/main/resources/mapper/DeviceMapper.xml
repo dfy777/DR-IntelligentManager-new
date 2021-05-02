@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.DeviceMapper">
+	
+	<delete id="deleteDeviceById" parameterType="Integer">
+        delete from bishe.device_manage where cid=#{id}
+    </delete>
+	
+	
+	<select id="findDeviceById" parameterType="Integer" resultType="com.example.demo.pojo.Device">
+		select * from bishe.device_manage where cid=#{id}
+  	</select>
+
+
+	<select id="findDevIdByFacIdAndDevName" resultType="Integer">
+		select cid from bishe.device_manage where fac_id=#{fid} and devname=#{devname}
+	</select>
+
+
+    <update id="updateDevice" parameterType="com.example.demo.pojo.Device">
+        update bishe.device_manage set
+        fac_id=#{fac_id},
+        ord_id=#{ord_id},
+		prod_id=#{prod_id},
+		client_id=#{client_id},
+		dev_id=#{dev_id},
+		prod_num=#{prod_num},
+		dev_num=#{dev_num},
+		ordname=#{ordname},
+		devname=#{devname},
+		prodname=#{prodname},
+		progress=#{progress},
+        status=#{status}
+        where cid=#{cid}
+    </update>
+
+
+    <insert id="insertDevice" parameterType="com.example.demo.pojo.Device" 
+			keyProperty="cid" useGeneratedKeys="true">
+        insert into bishe.device_manage(fac_id,ord_id,prod_id,dev_id,prod_num,dev_num,
+			devname,prodname,progress,status,ordname,client_id)
+        values(#{fac_id},#{ord_id},#{prod_id},#{dev_id},#{prod_num},#{dev_num},
+			#{devname},#{prodname},#{progress},#{status},#{ordname},#{client_id})
+    </insert>
+
+
+	<select id="findDevIdByName" parameterType="String" resultType="Integer">
+		select cid from bishe.device_entity where name=#{name}
+	</select>
+	
+	
+	<select id="findDeviceByFacAndDevId" resultType="com.example.demo.pojo.Device">
+		select * from bishe.device_manage where fac_id=#{fid} and dev_id=#{did}
+	</select>
+
+
+	<select id="findDevicesByFacId" resultType="com.example.demo.pojo.Device">
+		select * from bishe.device_manage where fac_id=#{fid}
+	</select>
+	
+	
+	<select id="getDeviceByFacIdOnPage" parameterType="Integer" 
+			resultType="com.example.demo.pojo.Device">
+		select * from bishe.device_manage where fac_id=#{id}
+	</select>
+	
+	
+	<select id="getAllDevices" resultType="com.example.demo.pojo.Device">
+		select * from bishe.device_manage where client_id=#{id}
+	</select>
+
+
+	<select id="delayStartProduce" parameterType="String" resultType="java.util.Map">
+		${sqlStr}
+	</select>
+	
+	
+	<select id="delayStopProduce" parameterType="String" resultType="java.util.Map">
+		${sqlStr}
+	</select>
+	
+	
+	<update id="updateDeviceStatusByDevId">
+		update bishe.device_manage set status=#{dstatus} where cid=#{dev_id}
+	</update>
+	
+</mapper>

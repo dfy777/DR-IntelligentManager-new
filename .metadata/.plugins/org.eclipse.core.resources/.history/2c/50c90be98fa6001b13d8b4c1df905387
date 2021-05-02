@@ -1,0 +1,20 @@
+package com.example.demo.mapper;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import com.example.demo.pojo.Product;
+
+import io.lettuce.core.dynamic.annotation.Param;
+
+@Mapper
+public interface ProductMapper {
+	Product getProductById(Integer id);
+	
+	void deleteProductById(Integer id);
+	
+	void updateProduct(Product product);
+	
+	void insertProduct(Product product);
+	
+	void mergeProdAndFac(@Param("prod_id")int prod_id, @Param("fac_id")int fac_id);
+}

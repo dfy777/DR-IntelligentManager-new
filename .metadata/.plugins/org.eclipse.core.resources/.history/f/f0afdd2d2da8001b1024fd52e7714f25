@@ -1,0 +1,26 @@
+package com.example.demo.mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import com.example.demo.pojo.Order;
+import com.example.demo.pojo.Product;
+
+@Mapper
+public interface OrderMapper {
+	
+	Order getOrderById(Integer id);
+	
+	void updateOrder(Order order);
+	
+	void deleteOrderById(Integer id);
+	
+	void insertOrder(Order order);
+	
+	List<Order> getOrderByFacIdOnPage(Integer id);
+	
+	Integer getProdIdByName(String name);
+	
+	Product getProductByName(String name);
+}

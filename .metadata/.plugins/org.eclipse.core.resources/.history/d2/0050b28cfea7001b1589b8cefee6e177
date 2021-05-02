@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+    
+    <head>
+        <meta charset="UTF-8">
+        <title>欢迎页面-X-admin2.2</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+        <link rel="stylesheet" href="./css/font.css">
+        <link rel="stylesheet" href="./css/xadmin.css">
+        <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
+        <script type="text/javascript" src="./js/xadmin.js"></script>
+        <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+        <!--[if lt IE 9]>
+            <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+            <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    
+    <body>
+        <div class="layui-fluid">
+            <div class="layui-row">
+                <form class="layui-form">
+                    <div class="layui-form-item">
+                        <label for="device" class="layui-form-label">
+                            <span class="x-red">*</span>设备名称
+                        </label>
+                        <div class="layui-input-inline">
+                            <select id="shipping" name="shipping" class="valid" lay-filter="changedev" lay-verify="required">
+                                <option value="">--设备类型--</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="product" class="layui-form-label">
+                            <span class="x-red">*</span>产品
+                        </label>
+                        <div class="layui-input-inline">
+                            <select id="productlist" name="productlist" class="valid" lay-filter="prod" lay-verify="required">
+                                <option value="">--产品类型--</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="prodnum" class="layui-form-label">
+                            <span class="x-red">*</span>
+							<span id="prod-num-limit">生产数量</span>
+                        </label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="prodnum" name="prodnum" required="" lay-verify="prodnumlimit"
+                            autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="username" class="layui-form-label">
+                            <span class="x-red">*</span>收货人
+                        </label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="username" name="username" required="" lay-verify="required" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="phone" class="layui-form-label">
+                            <span class="x-red">*</span>手机
+                        </label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="phone" name="phone" required="" lay-verify="phone" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="username" class="layui-form-label">
+                            <span class="x-red">*</span>收货地址
+                        </label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="location" name="location" required="" lay-verify="required" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="username" class="layui-form-label">
+                            <span class="x-red">*</span>支付方式
+                        </label>
+                        <div class="layui-input-inline">
+                            <select name="contrller" id="payfunc">
+                                <option>支付方式</option>
+                                <option>支付宝</option>
+                                <option>微信</option>
+                                <option>货到付款</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text">
+                        <label for="desc" class="layui-form-label">描述</label>
+                        <div class="layui-input-block">
+                            <textarea placeholder="请输入内容" id="desc" name="desc" class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="L_repass" class="layui-form-label"></label>
+                        <button class="layui-btn" lay-filter="add" lay-submit="">增加</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    
+
+
+        <script>
+	        var devicename = new Array;
+	    	devicename.push("轮盘式发酵翻堆机");
+	    	devicename.push("腻子粉生产设备");
+	    	devicename.push("水处理设备");
+	    	devicename.push("矿泉水生产设备");
+	    	devicename.push("尿素生产机械");
+	    	devicename.push("玉米面加工设备");
+	    	devicename.push("煤枕木生产设备");
+	    	
+	        var device = new Array();
+	        device["轮盘式发酵翻堆机"] = ["有机肥"];
+	        device["腻子粉生产设备"] = ["腻子粉"];
+	        device["水处理设备"] = ["纯水"];
+	        device["矿泉水生产设备"] = ["桶装水"];
+	        device["尿素生产机械"] = ["玻璃水洗车液","柴油机尾气处理液","尿素"];
+	        device["玉米面加工设备"] = ["玉米面"];
+	        device["煤枕木生产设备"] = ["枕木"];
+	        
+	        var prodname = new Array();
+	        prodname["有机肥"] = 10;
+	        prodname["腻子粉"] = 30;
+	        prodname["纯水"] = 25;
+	        prodname["桶装水"] = 10;
+	        prodname["玻璃水洗车液"] = 50;
+	        prodname["柴油机尾气处理液"] = 35;
+	        prodname["尿素"] = 15;
+	        prodname["玉米面"] = 25;
+	        prodname["枕木"] = 25;
+	
+	        
+	        var device_manage = new Array();
+	        device_manage["轮盘式发酵翻堆机"] = 0;
+	        device_manage["腻子粉生产设备"] = 0;
+	        device_manage["水处理设备"] = 0;
+	        device_manage["矿泉水生产设备"] = 0;
+	        device_manage["尿素生产机械"] = 0;
+	        device_manage["玉米面加工设备"] = 0;
+	        device_manage["煤枕木生产设备"] = 0;
+			
+            function devicetypename() {
+                var devicetypes = document.getElementById("shipping");
+                // var gametypes = $("#gametype");
+                for (var i in device) {
+                    devicetypes.add(new Option(i, i), null);
+                }
+            }
+            //window.onload = devicetypename();
+        </script>
+        
+		<script>
+            layui.use(['form', 'layer'],
+            function() {
+                $ = layui.jquery;
+                var form = layui.form,
+                layer = layui.layer;
+
+                //自定义验证规则
+                form.verify({
+                    prodnumlimit: function(value) {
+                    	if (parseInt(value) < 0) {
+                    		return "请输入大于0的数字"
+                    	}
+                    	
+                    	if (isNaN(value)) {
+                            return "请输入纯数字";
+                        }
+                    	
+                    	var selectprod = document.getElementById("productlist").value;
+                    	var selectdevice = document.getElementById("shipping").value;
+                    	if (device_manage[selectdevice] != null && prodname[selectprod] != null) {
+                    		var numlimit = prodname[selectprod] * device_manage[selectdevice];
+                            if (parseInt(value) > parseInt(numlimit)) {
+                            	return "超出生产数量了";
+                            } 
+                    	}
+                    }
+                });
+                
+                $.ajax({
+                    type:'get',
+                    url:'/home/factory/device/find-deviceinfo',
+                    success: function (res) {
+                        var successData = JSON.stringify(res);
+                        
+
+                        if (res.code == 20000) {
+                        	var devicetypes = document.getElementById("shipping");
+                        	for (i = 0; i < devicename.length; i++) { 
+                        	    if (res.data[devicename[i]] != null) {
+                        	    	device_manage[devicename[i]] = res.data[devicename[i]];
+                        	    	devicetypes.add(new Option(devicename[i], devicename[i]), null);
+                        	    }
+                        	}
+                        	form.render('select');
+                        }
+
+                        if (res.data == 30005) {
+                        	alert("error:找不到相关数据");
+                        }
+                        
+                    },
+                    error: function (res) {
+                        var errorData = JSON.stringify(res);
+                        alert("error:通信错误");
+                    }
+                    
+                }); 
+
+
+
+                form.on('select(changedev)',function(data) {
+                    var selectdevice = document.getElementById("shipping").value;
+                    var productlist = document.getElementById("productlist");
+
+                    $("#productlist").empty();
+                        
+                    for (var i in device) {
+                        if (i == selectdevice) {
+                            for (var j in device[i]) {
+                                proHtml = '<option value="' + device[i][j] + '">' + device[i][j] + '</option>';
+                                $("select[name=productlist]").append(proHtml);
+                            }
+                        }
+                    }
+                    form.render('select');
+                    
+                    var selectprod = document.getElementById("productlist").value;
+                    if (device_manage[selectdevice] != null && prodname[selectprod] != null) {    
+                    	var numlimit = prodname[selectprod] * device_manage[selectdevice];
+                        document.getElementById("prod-num-limit").innerHTML = "最大数量" + numlimit;
+                    } else {
+                    	document.getElementById("prod-num-limit").innerHTML = "生产数量";
+                    }
+                })
+                
+                form.on('select(prod)',function(data) {
+                	var selectprod = document.getElementById("productlist").value;
+                	var selectdevice = document.getElementById("shipping").value;
+                	if (device_manage[selectdevice] != null && prodname[selectprod] != null) {
+                		var numlimit = prodname[selectprod] * device_manage[selectdevice];
+                        document.getElementById("prod-num-limit").innerHTML = "最大数量" + numlimit;
+                	} else {
+                		document.getElementById("prod-num-limit").innerHTML = "生产数量";
+                	}  
+                })
+
+                //监听提交
+                form.on('submit(add)',
+                function(data) {
+                	var dname = document.getElementById('shipping').value
+                	var dev_id = -1;
+                	for (i = 0; i < devicename.length; i++) {
+                		if (dname == devicename[i]) {
+                			did = i;
+                			break;
+                		}
+                	}
+                	
+                    var ord_name = document.getElementById('productlist').value
+                    var receiver = document.getElementById('username').value
+                    var prod_num = document.getElementById('prodnum').value
+                    var phone = document.getElementById('phone').value
+                    var pay_func = document.getElementById('payfunc').value
+                    var description = document.getElementById('desc').value
+                    var location = document.getElementById('location').value
+                    
+                    var order = {
+                    	"dev_id":dev_id,"ord_name":ord_name,"receiver":receiver,"prod_num":prod_num,
+                    	"phone":phone,"pay_func":pay_func,"description":description,"location":location,
+                	}
+                    
+                	$.ajax({
+                        type:'get',
+                        url:'/home/factory/order/add-order',
+                        data:JSON.stringify(order),
+                        dataType: "json",
+                        headers: {
+                            'Content-Type': 'application/json;charset=UTF-8'
+                        },
+                        success: function (res) {
+                            var successData = JSON.stringify(res);
+                            
+
+                            if (res.code == 20000) {
+                            	var devicetypes = document.getElementById("shipping");
+                            	for (i = 0; i < devicename.length; i++) { 
+                            	    if (res.data[devicename[i]] != null) {
+                            	    	device_manage[devicename[i]] = res.data[devicename[i]];
+                            	    	devicetypes.add(new Option(devicename[i], devicename[i]), null);
+                            	    }
+                            	}
+                            	form.render('select');
+                            }
+
+                            if (res.data == 30005) {
+                            	alert("error:找不到相关数据");
+                            }
+                            
+                        },
+                        error: function (res) {
+                            var errorData = JSON.stringify(res);
+                            alert("error:通信错误");
+                        }
+                        
+                    });
+                    function() {
+                        // 获得frame索引
+                        var index = parent.layer.getFrameIndex(window.name);
+                        //关闭当前frame
+                        parent.layer.close(index);
+                    });
+                    return false;
+                });
+
+            });
+        </script>
+        <script>var _hmt = _hmt || []; (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";
+                var s = document.getElementsByTagName("script")[0];
+                s.parentNode.insertBefore(hm, s);
+            })();</script>
+    </body>
+
+</html>

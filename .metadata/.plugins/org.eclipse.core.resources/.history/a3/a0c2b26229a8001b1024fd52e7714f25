@@ -1,0 +1,7 @@
+package com.example.demo.pojo;
+
+public class MyCommonFunc {
+	static String getRandomString(int length) {
+		
+	}
+}

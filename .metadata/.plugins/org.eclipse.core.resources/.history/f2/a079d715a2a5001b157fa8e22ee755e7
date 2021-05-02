@@ -1,0 +1,69 @@
+package com.example.demo;
+
+import org.junit.jupiter.api.Test;
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+
+import com.example.demo.mapper.OrderMapper;
+import com.example.demo.pojo.Order;
+import com.example.demo.pojo.PatternUtil;
+
+@MapperScan("com.example.demo.mapper")
+@SpringBootTest
+class IntelligentManagerApplicationTests {
+
+	@Autowired
+	private RedisTemplate<String, Object> redisTemplate;
+	
+	@Autowired
+	private OrderMapper orderMapper;
+
+	
+	/**
+	 * 测试redis使用
+	 * @throws Exception
+	 */
+	public void testRedis() throws Exception {
+		 
+		//User user = userMapper.getUserById(3);
+		//System.out.print(user);
+		
+		//redisTemplate.opsForValue().set("asdasfasd", "asdafasdf");
+	}
+	
+	/**
+	 * 测试正则表达式
+	 * @throws Exception
+	 */
+	public void testRegex() throws Exception {
+		
+		
+		System.out.println(PatternUtil.validateName("user123"));
+		System.out.println(PatternUtil.validatePassword("qwe123"));
+	}
+	
+	
+	/**
+	 * 测试ordermapper
+	 */
+	@Test
+	public void orderTest() throws Exception {
+		Order order = new Order();
+		order.setClient_id(2);
+		order.setClientId(3);
+		order.setDescription("简介");
+		order.setFac_id(3);
+		order.generateOrd_name();
+		order.setPay_status("未支付");
+		order.setPrice(3999);
+		order.setStatus("进行中");
+		order.setOrder_id("2");
+		
+		orderMapper.updateOrder(order);
+		
+		
+	}
+}
