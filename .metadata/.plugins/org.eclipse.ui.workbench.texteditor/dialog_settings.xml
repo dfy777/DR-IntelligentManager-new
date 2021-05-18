@@ -5,13 +5,15 @@
 		<item key="DIALOG_Y_ORIGIN" value="332"/>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="user"/>
+		<item key="selection" value=""/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="false"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
+			<item value="phar"/>
+			<item value="pageName"/>
 			<item value="user"/>
 			<item value="member_del"/>
 		</list>
@@ -19,8 +21,8 @@
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
-		<item key="DIALOG_X_ORIGIN" value="610"/>
-		<item key="DIALOG_Y_ORIGIN" value="453"/>
+		<item key="DIALOG_X_ORIGIN" value="1319"/>
+		<item key="DIALOG_Y_ORIGIN" value="332"/>
 		<item key="DIALOG_WIDTH" value="405"/>
 		<item key="DIALOG_HEIGHT" value="511"/>
 		<item key="DIALOG_FONT_NAME" value="1|Microsoft YaHei UI|9.0|0|WINDOWS|1|-18|0|0|0|400|0|0|0|1|0|0|0|0|Microsoft YaHei UI"/>

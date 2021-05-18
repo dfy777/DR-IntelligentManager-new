@@ -40,11 +40,10 @@ public class OrderServiceImpl implements OrderService {
 	public Result<String> addOrder(Order order, HttpServletRequest request) {
 		int cid = Integer.parseInt(request.getSession().
 				getAttribute(DValueEnum.LOGIN_USER_ID.getValue()).toString());
-		int fid = Integer.parseInt(request.getSession().
-				getAttribute(DValueEnum.CHECKED_FACTORY_ID.getValue()).toString());
+		//int fid = Integer.parseInt(request.getSession().getAttribute(DValueEnum.CHECKED_FACTORY_ID.getValue()).toString());
 		
 		order.setClient_id(cid);
-		order.setFac_id(fid);
+		//order.setFac_id(fid);
 		order.generateOrd_name();
 		order.setPay_status("未支付");
 		order.setStatus("未进行");
@@ -70,10 +69,11 @@ public class OrderServiceImpl implements OrderService {
 	private PageInfo<Order> getOrdersInfoByFacId(PageRequest pageRequest, HttpServletRequest request) {
 		
 		try {
-			HttpSession session = request.getSession();
+			//HttpSession session = request.getSession();
 			int pageNum = pageRequest.getPageNum();
 			int pageSize = pageRequest.getPageSize();
-			int fac_id = Integer.parseInt(session.getAttribute(DValueEnum.CHECKED_FACTORY_ID.getValue()).toString());
+			//int fac_id = Integer.parseInt(session.getAttribute(DValueEnum.CHECKED_FACTORY_ID.getValue()).toString());
+			int fac_id = pageRequest.getSelectIndex();
 			
 			
 			if (pageNum <= 0 || pageSize <= 0) {

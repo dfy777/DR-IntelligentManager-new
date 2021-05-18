@@ -1,9 +1,0 @@
-package com.example.demo.service;
-
-import javax.servlet.http.HttpServletRequest;
-
-import com.example.demo.pojo.Result;
-
-public interface DeviceService {
-	Result<String> addDeviceToFactory(HttpServletRequest request);
-}

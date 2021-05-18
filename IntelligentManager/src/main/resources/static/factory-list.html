@@ -147,7 +147,8 @@
                                 "factory_id":data.factory_id
                             },
                         	success: function (res){
-                        		xadmin.open('添加设备','/device-add.html',400,300)
+                        		var url = '/device-add.html?facid=' + data.factory_id;
+                        		xadmin.open('添加设备',url,400,300);
                         	},
                             error: function (res) {
                                 alert("error:通信错误");
@@ -163,7 +164,8 @@
                                 "factory_id":data.factory_id
                             },
                         	success: function (res){
-                        		xadmin.open('添加订单','/order-add.html',800,600)
+                        		var url = '/order-add.html?facid=' + data.factory_id;
+                        		xadmin.open('添加订单',url,800,600);
                         	},
                             error: function (res) {
                                 alert("error:通信错误");
@@ -178,12 +180,11 @@
                             "factory_id":data.factory_id
                         },
                     	success: function (res){
-                    		//self.location='/home/factory/order/show';
-                    		//xadmin.open('查看订单','/order-list.html',800,600)
+                    		var url = '/order-list.html?facid=' + data.factory_id;
                     		if (top.layui.index) {
-					            top.layui.index.openTabsPage('/order-list.html', null);
+					            top.layui.index.openTabsPage(url, null);
 					        } else {
-					            window.open('/order-list.html');
+					            window.open(url);
 					        }
                     	},
                         error: function (res) {
@@ -198,12 +199,11 @@
                             "factory_id":data.factory_id
                         },
                     	success: function (res){
-                    		//self.location='/home/factory/order/show';
-                    		//xadmin.open('查看订单','/order-list.html',800,600)
+                    		var url = '/device-list.html?facid=' + data.factory_id;
                     		if (top.layui.index) {
-					            top.layui.index.openTabsPage('/device-list.html', null);
+					            top.layui.index.openTabsPage(url, null);
 					        } else {
-					            window.open('/device-list.html');
+					            window.open(url);
 					        }
                     	},
                         error: function (res) {

@@ -54,10 +54,10 @@ public class DeviceServiceImpl implements DeviceService {
 	@Override
 	public Result<String> addDeviceToFactory(HttpServletRequest request) {
 		try {
-			int fac_id = Integer.parseInt(request.getSession().
-					getAttribute(DValueEnum.CHECKED_FACTORY_ID.getValue()).toString());
+			//int fac_id = Integer.parseInt(request.getSession().getAttribute(DValueEnum.CHECKED_FACTORY_ID.getValue()).toString());
 			String dname = request.getParameter("dname");
 			int num = Integer.parseInt(request.getParameter("number"));
+			int fac_id = Integer.parseInt(request.getParameter("facid"));
 			int dev_id = deviceMapper.findDevIdByName(dname);
 			Integer cid = Integer.parseInt(request.getSession().
 					getAttribute(DValueEnum.LOGIN_USER_ID.getValue()).toString());
@@ -77,8 +77,6 @@ public class DeviceServiceImpl implements DeviceService {
 			} else {
 				//如果已经有该设备，则增加相应数量
 				int tmpnum = device.getDev_num();
-				System.out.println(device.toString());
-				System.out.println(num);
 				device.setDev_num(tmpnum + num);
 				deviceMapper.updateDevice(device);
 			}
@@ -99,11 +97,11 @@ public class DeviceServiceImpl implements DeviceService {
 	
 	private PageInfo<Device> getDevicesInfoByFacId(PageRequest pageRequest, HttpServletRequest request) {
 		try {
-			HttpSession session = request.getSession();
+			//HttpSession session = request.getSession();
 			int pageNum = pageRequest.getPageNum();
 			int pageSize = pageRequest.getPageSize();
-			int fac_id = Integer.parseInt(session.getAttribute(DValueEnum.CHECKED_FACTORY_ID.getValue()).toString());
-			
+			//int fac_id = Integer.parseInt(session.getAttribute(DValueEnum.CHECKED_FACTORY_ID.getValue()).toString());
+			int fac_id = pageRequest.getSelectIndex();
 			
 			if (pageNum <= 0 || pageSize <= 0) {
 				throw new IllegalArgumentException("非法分页数据");

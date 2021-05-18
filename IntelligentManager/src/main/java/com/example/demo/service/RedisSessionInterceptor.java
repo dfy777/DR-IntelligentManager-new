@@ -38,11 +38,11 @@ public class RedisSessionInterceptor implements HandlerInterceptor {
 		//判断cookie内容
 		if (cookie == null) {
 			response.sendRedirect(request.getContextPath());
-			System.out.println(1);
+			//System.out.println(1);
 			return false;
 		}
 		
-		System.out.println(2);
+		//System.out.println(2);
 		String cookie_userid = null;
 		
 		for (Cookie item : cookie) {
@@ -52,12 +52,12 @@ public class RedisSessionInterceptor implements HandlerInterceptor {
 			}
 		}
 		
-		System.out.println(3);
+		//System.out.println(3);
 		//如果cookie中没有用户相关信息
 		if (cookie_userid == null) {
 			response.sendRedirect(request.getContextPath());
 			//response.sendRedirect("localhost:8080/home");
-			System.out.println(4);
+			//System.out.println(4);
 			return false;
 		}
 		

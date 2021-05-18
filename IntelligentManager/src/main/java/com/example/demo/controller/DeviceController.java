@@ -61,7 +61,8 @@ public class DeviceController {
 	 */
 	@PostMapping("/home/factory/device/show/select_byfacid")
 	@ResponseBody
-	public PageResult getAllOrderOnPageByFacId(@RequestBody PageRequest pageRequest, HttpServletRequest request) {
+	public PageResult getDeviceOnPageByFacId(@RequestBody PageRequest pageRequest, HttpServletRequest request) {
+		//System.out.println(pageRequest.toString());
 		return deviceService.getDevicesOnPageByFacId(pageRequest, request);
 	}
 	
@@ -74,7 +75,7 @@ public class DeviceController {
 	 */
 	@PostMapping("/home/factory/device/show/select_all")
 	@ResponseBody
-	public PageResult getAllOrderOnPage(@RequestBody PageRequest pageRequest, HttpServletRequest request) {
+	public PageResult getAllDevicesOnPage(@RequestBody PageRequest pageRequest, HttpServletRequest request) {
 		return deviceService.getAllDevicesOnPage(pageRequest, request);
 	}
 	
