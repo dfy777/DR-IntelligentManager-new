@@ -31,10 +31,17 @@
                 <div class="layui-col-md12">
                     <div class="layui-card">
                         <div class="layui-card-header">
-                            <button class="layui-btn layui-btn-danger" onclick="delAll()">
+                            <!-- <button class="layui-btn layui-btn-danger" onclick="delAll()">
                                 <i class="layui-icon"></i>删除</button>
                             <button class="layui-btn" onclick="xadmin.open('添加用户','./order-add.html',800,600)">
-                                <i class="layui-icon"></i>添加</button>
+                                <i class="layui-icon"></i>添加</button> -->
+                             <div class="demoTable">
+                                搜索订单号：
+                                <div class="layui-inline">
+                                  <input class="layui-input" name="id" id="demoReload" autocomplete="off">
+                                </div>
+                                <button class="layui-btn" data-type="reload">搜索</button>
+                            </div>
                         </div>
                         <div class="layui-card-body ">
                         	<table id="device-tb" lay-filter="dev-tb">
@@ -63,7 +70,9 @@
     	{{#  } else if(d.status == "进行中"){ }}
     	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="stop">停止</a>
     	{{#  } }}
+		<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除</a>
 	</script>
+	
 	
 	
 	<script type="text/javascript">
@@ -100,7 +109,7 @@
                 elem:"#device-tb",
                 url:"/home/factory/device/show/select_byfacid",
                 method: 'post',
-                where:{selectIndex:facid},
+                where:{selectIndex:facid,condition:"0"},
                 dataType:'json',
                 contentType: 'application/json;charset=UTF-8',
                 page: true, //开启分页
@@ -110,7 +119,7 @@
                     //{field:'fac_id', title: '工厂编号', align:'center', sort: true},
                     {field:'cid', align:'center', title: '设备编号', sort: true},
                     {field:'devname', align:'center', title: '设备'},
-                    {field:'dev_num', align:'center', title: '数量'},
+                    {field:'prod_num', width:75, align:'center', title: '生产数量'},
                     {field:'ordname', width:200, align:'center', title: '订单编号'},
                     {field:'prodname', align:'center', title: '产品'},
                     {field:'status', align:'center', title: '生产状态'},
@@ -142,8 +151,9 @@
                         "count": res.totalSize, //解析数据长度
                         "data": res.content //解析数据列表
                     };
-                }
-                ,done:function (res,currentCount) {
+                },
+                id: 'testReload',
+                done:function (res,currentCount) {
     				//***重点***：table渲染完成后渲染element进度条
                     element.render()
                 }
@@ -218,9 +228,69 @@
                             alert("error:通信错误");
                         }
                     })
+                } else if (obj.event == 'delete') {
+                	layer.confirm('要删除设备吗', function(index) {
+                  		$.ajax({
+                        	type:'post',
+                        	url:'/home/factory/device/show/delete-device',
+                        	data:{
+                  				"dev_id":data.cid
+                            },
+                            success: function (res){
+                        		if (res.data == 20000) {
+                        			layer.alert("删除成功", {
+                                        icon: 6
+                                    },
+                                    function() {
+                                    	//关闭当前frame
+                                        xadmin.close();
+                                        // 可以对父窗口进行刷新 
+                                        xadmin.father_reload();
+                                    });
+                        		} else if (res.data == 30006) {
+                        			layer.alert("删除失败，该订单已开始生产", {
+                                        icon: 6
+                                    },
+                                    function() {
+                                    	//关闭当前frame
+                                        xadmin.close();
+                                        // 可以对父窗口进行刷新 
+                                        xadmin.father_reload();
+                                    });
+                        		}
+                        	},
+                            error: function (res) {
+                            	var resData = JSON.stringify(res)
+                                //alert("error:通信错误");
+                            	alert(resData);
+                            }
+                        })
+                  	});	
                 }
+        	
         	});
             
+            
+            var $ = layui.$, active = {
+				reload: function(){
+					var demoReload = $('#demoReload');	//得到搜索框里已输入的数据   
+					var selectval = demoReload.val();
+					if (demoReload.val() == "") {
+						selectval = "0"
+					}
+					
+            	    //执行重载
+					table.reload('testReload', {
+	            	    page: { curr: 1 },//重新从第 1 页开始
+						where: { condition : selectval,selectIndex:facid }		//在表格中进行搜索
+            		});
+				}
+            };
+            	  
+			$('.demoTable .layui-btn').on('click', function(){
+            	var type = $(this).data('type');
+            	active[type] ? active[type].call(this) : '';
+			});        
         });
     
     	

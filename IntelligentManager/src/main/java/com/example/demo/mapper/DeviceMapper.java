@@ -25,15 +25,21 @@ public interface DeviceMapper {
 	
 	List<Device> getDeviceByFacIdOnPage(Integer id);
 	
+	List<Device> getDeviceByFacIdAndOrdnameOnPage(@Param("fid")Integer fid, @Param("ordname")String ordname);
+	
 	List<Device> getAllDevices(Integer id);
 	
-	Device findDeviceByFacAndDevId(@Param("fid")Integer fid, @Param("did")Integer did);
+	List<Device> findDeviceByFacAndDevId(@Param("fid")Integer fid, @Param("did")Integer did);
 	
-	List<Device> findDevicesByFacId(@Param("fid")Integer fid);
+	List<Device> findDevicesByFacIdWithOrdIdNull(@Param("fid")Integer fid);
 	
 	List<Map<String, Object>> delayStartProduce(@Param(value="sqlStr") String sqlStr);
 	
 	List<Map<String, Object>> delayStopProduce(@Param(value="sqlStr") String sqlStr);
 	
 	void updateDeviceStatusByDevId(@Param("dstatus")String dstatus, @Param("dev_id")Integer dev_id);
+	
+	List<Map<String, Object>> getAllProgressAndStatus();
+	
+	List<Map<String, Object>> getAllProgressAndProdNum();
 }

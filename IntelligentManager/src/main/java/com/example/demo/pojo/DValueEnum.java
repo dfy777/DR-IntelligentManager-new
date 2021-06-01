@@ -12,6 +12,7 @@ public enum DValueEnum {
 	CHECKED_FACTORY_ID("CheckedFactoryId"),
 	CHECKED_DEVICE_ID("CheckedDeviceId");
 	
+	
 	private String value;
 	
 	DValueEnum(String name) {

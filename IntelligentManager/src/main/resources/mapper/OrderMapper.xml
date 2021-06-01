@@ -5,6 +5,11 @@
         delete from bishe.order where order_id=#{id}
     </delete>
 
+	
+	<delete id="deleteOrderByOrdName" parameterType="String">
+		delete from bishe.order where ord_name=#{ord_name}
+	</delete>
+
 
     <select id="getOrderById" parameterType="Integer" resultType="com.example.demo.pojo.Order">
         select * from bishe.order where order_id=#{id}
@@ -54,12 +59,21 @@
 			resultType="com.example.demo.pojo.Order">
 		select * from bishe.order where fac_id=#{id}
 	</select>
+
 	
+	<select id='getOrderByFacIdAndProdnameOnPage' resultType="com.example.demo.pojo.Order">
+		select * from bishe.order where fac_id=#{fid} and prod_name=#{prodname}
+	</select>
 	
 	<select id="getAllOrders" resultType="com.example.demo.pojo.Order">
 		select * from bishe.order where client_id=#{id}
 	</select>
 	
+	
+	<select id="getDevicesByOrdName" parameterType="String"
+			resultType="com.example.demo.pojo.Device">
+		select * from bishe.device_manage where ordname=#{ord_name}
+	</select>
 
 	<select id="getProdIdByPordName" parameterType="String" resultType="Integer">
 		select product_id from bishe.product where prod_name=#{name}
@@ -71,5 +85,14 @@
 	</select>
 	
 	
+	<resultMap id="ProductNumMap" type="java.util.HashMap">
+	    <id column="order_id" property="id" jdbcType="INTEGER" />
+	    <result column="prod_num" property="num" jdbcType="INTEGER" />
+	    <result column="prod_name" property="name" jdbcType="VARCHAR" />
+		<result column="progress" property="progress" jdbcType="VARCHAR" />
+	</resultMap>
 	
+	<select id="getAllProductNum" resultMap="ProductNumMap">
+		select order_id, prod_num, prod_name, progress from bishe.order
+	</select>
 </mapper>

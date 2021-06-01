@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+    <head>
+        <meta charset="UTF-8">
+        <title>欢迎页面-X-admin2.2</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+        <link rel="stylesheet" href="/css/font.css">
+        <link rel="stylesheet" href="/css/xadmin.css">
+        <script src="/lib/layui/layui.js" charset="utf-8"></script>
+        <script type="text/javascript" src="/js/xadmin.js"></script>
+        <!--[if lt IE 9]>
+          <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+          <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+        <div class="layui-fluid">
+            <div class="layui-row layui-col-space15">
+
+                <div class="layui-col-sm12 layui-col-md6">
+                    <div class="layui-card">
+                        <div class="layui-card-header">设备状况</div>
+                        <div class="layui-card-body" style="min-height: 280px;">
+                            <div id="main1" class="layui-col-sm12" style="height: 300px;"></div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-sm12 layui-col-md6">
+                    <div class="layui-card">
+                        <div class="layui-card-header">产品生产状况</div>
+                        <div class="layui-card-body" style="min-height: 280px;">
+                            <div id="main2" class="layui-col-sm12" style="height: 300px;"></div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="layui-col-sm12 layui-col-md6">
+                    <div class="layui-card">
+                        <div class="layui-card-header">用户来源</div>
+                        <div class="layui-card-body" style="min-height: 280px;">
+                            <div id="main3" class="layui-col-sm12" style="height: 300px;"></div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-sm12 layui-col-md6">
+                    <div class="layui-card">
+                        <div class="layui-card-header">硬盘使用量</div>
+                        <div class="layui-card-body" style="min-height: 280px;">
+                            <div id="main4" class="layui-col-sm12" style="height: 300px;"></div>
+
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+        </div>
+    
+        <script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.min.js"></script>
+        <script type="text/javascript">
+
+        layui.use(['layer'], function(){
+            $ = layui.jquery;
+            layer = layui.layer;
+
+            var data1 = null;
+            var data2 = null;
+
+            $.ajax({
+                type:'get',
+                url:'/home/index/show/device-info',
+                success : function(res) {
+                    if(res.code == 20000) {
+                        data1 = res.data;
+                    }
+                }, 
+                error : function(res) {
+                    var resstr = JSON.stringify(res);
+                    alert(resstr);
+                }
+            })
+
+            $.ajax({
+                type:'get',
+                url:'/home/index/show/product-info',
+                success : function(res) {
+                	if(res.code == 20000) {
+                        data2 = res.data;
+                    }
+                }, 
+                errot : function(res) {
+                    alert("error");
+                }
+            })
+
+            //=========================chart 1===========================================
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('main1'));
+            // 指定图表的配置项和数据
+            var option = {
+                // 标题
+                title: {
+                    text: '东软',
+                    subtext:'智能制造云平台出品',
+                    left:'45%',
+                    borderColor:'white',
+                    borderWidth:1
+                },
+                // 工具箱
+                toolbox: {
+                    show: true,
+                    feature:{
+                        saveAsImage:{
+                            show:true
+                        },
+                        restore:{
+                            show:true
+                        }
+                    }
+                },
+                tooltip:{
+                    trigger:'axis'
+                },
+                // 图例
+                //legend: {
+                //    data: ['闲置','生产中','待机中','代交付']
+                //},
+                // x轴
+                xAxis: {
+                    data: ["闲置设备", "生产中设备", "待机中设备", "代交付设备"]
+                },
+                yAxis: {},
+                // 数据
+                series: [{
+                    name: '闲置',
+                    type: 'bar',
+                    data: [
+                        {
+                            value:res.data1[0],
+                            itemStyle: {
+                                color: '#CCCCCC'
+                            }
+                        },
+                        {
+                            value:res.data1[1],
+                            itemStyle: {
+                                color: '#FF6666'
+                            }
+                        },
+                        {
+                            value:res.data1[2],
+                            itemStyle: {
+                                color: '#FFFF66'
+                            }
+                        },
+                        {
+                            value:res.data1[3],
+                            itemStyle: {
+                                color: '#99CC66'
+                            }
+                        }
+                    ],
+                    barWidth:70,
+                    markPoint:{
+                        data:[
+                            {type:'max',name:'最大值'}
+                        ]
+                    }
+                }]
+                
+            };
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+
+
+            //=============================chart 2======================================//
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('main2'));
+            // 指定图表的配置项和数据
+            var option = {
+                toolbox: {
+                    show: true,
+                    feature:{
+                        saveAsImage:{
+                            show:true
+                        },
+                        restore:{
+                            show:true
+                        }
+                    }
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {            // Use axis to trigger tooltip
+                        type: 'shadow'        // 'shadow' as default; can also be 'line' or 'shadow'
+                    }
+                },
+                legend: {
+                    data: ['已完成', '待生产']
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'value'
+                },
+                yAxis: {
+                    type: 'category',
+                    //data: ['有机肥', '腻子粉', '纯水', '桶装水', '玻璃水洗车液', '柴油机尾气处理液', '尿素','玉米面']
+                    data: res.data2[0]
+                },
+                series: [
+                    {
+                        name: '已完成',
+                        type: 'bar',
+                        stack: 'total',
+                        label: {
+                            show: true
+                        },
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        //data: [320, 302, 301, 334, 390, 330, 320,100]
+                        data: res.data2[1]
+                    },
+                    {
+                        name: '待生产',
+                        type: 'bar',
+                        stack: 'total',
+                        label: {
+                            show: true
+                        },
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        //data: [120, 132, 101, 134, 90, 230, 210,25]
+                        data: res.data2[2]
+                    }
+                ]
+            };
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        })
+
+
+        
+    </script>
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";
+          var s = document.getElementsByTagName("script")[0]; 
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+    </body>
+</html>

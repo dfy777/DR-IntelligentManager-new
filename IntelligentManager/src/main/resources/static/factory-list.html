@@ -13,6 +13,7 @@
         <script type="text/javascript" src="/js/xadmin.js"></script>
     </head>
     
+    
     <body>
         <div class="x-nav">
             <span class="layui-breadcrumb">
@@ -26,6 +27,7 @@
             <div class="layui-row layui-col-space15">
                 <div class="layui-col-md12">
                     <div class="layui-card">
+                    	<!-- 
                         <div class="layui-card-body ">
                             <form class="layui-form layui-col-space5">
                                 <div class="layui-input-inline layui-show-xs-block">
@@ -57,7 +59,8 @@
                                         <i class="layui-icon">&#xe615;</i></button>
                                 </div>
                             </form>
-                        </div>
+                        </div> -->
+
                         <div class="layui-card-header">
                             <button class="layui-btn layui-btn-danger" onclick="delAll()">
                                 <i class="layui-icon"></i>删除</button>
@@ -113,9 +116,9 @@
                 cols: [[
                     {field:'factory_id', width:80, title: 'ID', sort: true},
                     {field:'fac_name', width:120, title: '工厂名字'},
-                    {field:'fac_location', width:200, title: '工厂位置'},
-                    {field:'username', width:80, title: '工厂位置'},
-                    {field:'phone', width:100, title: '工厂位置'},
+                    {field:'fac_location', width:150, title: '工厂位置'},
+                    {field:'username', width:80, title: '负责人'},
+                    {field:'phone', width:100, title: '电话'},
                     {fixed: 'right', width:360, align:'center', toolbar: '#barDemo'}
                 ]],
                 request: {

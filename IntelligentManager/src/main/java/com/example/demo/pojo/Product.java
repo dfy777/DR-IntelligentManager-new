@@ -12,6 +12,7 @@ public class Product implements Serializable {
 	private Integer product_id;
 	private Integer price;
 	private String prod_name;
+	private Integer num;
 	
 	public Integer getProduct_id() {
 		return product_id;
@@ -51,6 +52,12 @@ public class Product implements Serializable {
 		this.price = price;
 	}
 
+	public Integer getNum() {
+		return num;
+	}
 
+	public void setNum(Integer num) {
+		this.num = num;
+	}
 
 }

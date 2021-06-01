@@ -1,0 +1,94 @@
+package com.example.demo.service;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.demo.mapper.DeviceMapper;
+import com.example.demo.mapper.OrderMapper;
+import com.example.demo.mapper.ProductMapper;
+import com.example.demo.pojo.Result;
+import com.example.demo.pojo.ResultUtil;
+
+@Service
+public class IndexServiceImpl implements IndexService{
+	
+	@Autowired
+	DeviceMapper deviceMapper;
+	
+	@Autowired
+	ProductMapper productMapper;
+	
+	@Autowired
+	OrderMapper orderMapper;
+
+	@Override
+	public Result<List<Integer>> showIndexDeviceInfo() {
+		List<Map<String, Object>> deviceList = deviceMapper.getAllProgressAndStatus();
+		Integer data[] = new Integer[] {0,0,0,0};
+		
+		for (Map<String, Object> item : deviceList) {
+			switch (item.get("status").toString()) {
+			case "闲置中":
+				data[0] += 1;
+				break;
+				
+			case "进行中":
+				data[1] += 1;
+				break;
+			
+			case "未运行":
+				data[2] += 1;
+				break;
+				
+			case "已完成":
+				data[3] += 1;
+				break;
+				
+			default:
+				break;
+			}
+		}
+		List<Integer> resultList = Arrays.asList(data);
+		return ResultUtil.successRes(resultList);
+	}
+	
+	
+	@Override
+	public Result<List<List<Object>>> showIndexProductInfo() {
+		List<Map<String, Object>> orderList = orderMapper.getAllProductNum();
+		//记录待生产的产品总数
+		Map<String, Integer> maxProdNumMap = new HashMap<>();
+		//记录已生产的产品总数
+		Map<String, Integer> createdNumMap = new HashMap<>();
+		
+		//先处理生产总数的map
+		for (Map<String, Object> item : orderList) {
+			if (!(maxProdNumMap.containsKey(item.get("name")))) {
+				maxProdNumMap.put(item.get("name").toString(), Integer.parseInt(item.get("num").toString()));
+			} else {
+				Integer tmpInt = Integer.parseInt(item.get("num").toString());
+				tmpInt += maxProdNumMap.get("name");
+				maxProdNumMap.put(item.get("name").toString(), tmpInt);
+			}
+		}
+		
+		//处理已生产产品数的map
+		for (Map<String, Object> item : orderList) {
+			if (!(maxProdNumMap.containsKey(item.get("name")))) {
+				Integer tmpInt = Integer.parseInt(item.get("num").toString());
+				tmpInt *= (Integer.parseInt(item.get("progress").toString()) / 100);
+				createdNumMap.put(item.get("name").toString(), tmpInt);
+			} else {
+				Integer tmpInt = Integer.parseInt(item.get("num").toString());
+				tmpInt *= (Integer.parseInt(item.get("progress").toString()) / 100);
+			}
+		}
+		return null;
+	}
+}

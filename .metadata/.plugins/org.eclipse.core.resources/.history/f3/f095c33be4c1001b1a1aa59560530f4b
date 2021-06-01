@@ -1,0 +1,12 @@
+package com.example.demo.service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.example.demo.pojo.Result;
+
+public interface IndexService {
+	Result<List<Integer>> showIndexDeviceInfo();
+	
+	Result<List<List<Object>>> showIndexProductInfo();
+}

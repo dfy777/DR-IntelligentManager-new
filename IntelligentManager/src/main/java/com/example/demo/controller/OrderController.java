@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,13 @@ public class OrderController {
 	}
 	
 	
+	@PostMapping("/home/factory/order/show/delete-order")
+	@ResponseBody
+	public Result<String> deleteOrder(HttpServletRequest request) {
+		return orderService.deleteOrder(request);
+	}
+	
+	
 	@PostMapping("/home/factory/order/add-order")
 	@ResponseBody
 	public Result<String> addOrderToFactory(@RequestBody Order order, HttpServletRequest request) {
@@ -44,8 +53,8 @@ public class OrderController {
 	
 	@PostMapping("/home/factory/order/show/select_byfacid")
 	@ResponseBody
-	public PageResult getOrderOnPageByFacId(@RequestBody PageRequest pageRequest, HttpServletRequest request) {
-		return orderService.getOrdersOnPageByFacId(pageRequest, request);
+	public PageResult getOrderOnPageByFacId(@RequestBody Map<String, String> requestMap, HttpServletRequest request) {
+		return orderService.getOrdersOnPageByFacId(requestMap, request);
 	}
 	
 	
@@ -60,5 +69,12 @@ public class OrderController {
 	@ResponseBody
 	public Result<String> changeOrder(HttpServletRequest request) {
 		return orderService.changeOrder(request);
+	}
+	
+	@PostMapping("/home/factory/order/show/show-echarts")
+	@ResponseBody
+	public Result<Map<String, String>> showDeviceProgressOnCharts(HttpServletRequest request) {
+		//return orderService.showDeviceProgressOnCharts(request);
+		return null;
 	}
 }

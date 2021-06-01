@@ -12,7 +12,7 @@ public class PageRequest {
     /**
      * 选择的序号
      */
-    private int selectIndex;
+    //private int selectIndex;
     
     public int getPageNum() {
         return pageNum;
@@ -30,17 +30,17 @@ public class PageRequest {
         this.pageSize = pageSize;
     }
 
-	public int getSelectIndex() {
-		return selectIndex;
-	}
+	//public int getSelectIndex() {
+	//	return selectIndex;
+	//}
 
-	public void setSelectIndex(int selectIndex) {
-		this.selectIndex = selectIndex;
-	}
+	//public void setSelectIndex(int selectIndex) {
+	//	this.selectIndex = selectIndex;
+	//}
 
 	@Override
 	public String toString() {
-		return "PageRequest [pageNum=" + pageNum + ", pageSize=" + pageSize + ", selectIndex=" + selectIndex + "]";
+		return "PageRequest [pageNum=" + pageNum + ", pageSize=" + pageSize + ", selectIndex=" + "]";
 	}
     
    

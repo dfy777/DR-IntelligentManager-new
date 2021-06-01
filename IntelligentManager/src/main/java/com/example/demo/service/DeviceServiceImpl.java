@@ -33,22 +33,32 @@ public class DeviceServiceImpl implements DeviceService {
 	
 	@Override
 	public Result<Map<String, String>> findDeviceinfo(HttpServletRequest request) {
-		int fac_id = Integer.parseInt(request.getSession().
-				getAttribute(DValueEnum.CHECKED_FACTORY_ID.getValue()).toString());
+		//int fac_id = Integer.parseInt(request.getSession().getAttribute(DValueEnum.CHECKED_FACTORY_ID.getValue()).toString());
+		int fac_id = Integer.parseInt(request.getParameter("fac_id"));
 		
-		List<Device> deviceList = deviceMapper.findDevicesByFacId(fac_id);
+		List<Device> deviceList = deviceMapper.findDevicesByFacIdWithOrdIdNull(fac_id);
 		Map<String, String> deviceMaps = new HashMap<String, String>();
 		
 		if (deviceList == null) {
 			return ResultUtil.data_not_foundRes(null);
 		} else {
 			for (Device item : deviceList) {
-				deviceMaps.put(item.getDevname(), item.getDev_num().toString());
+				//统计设备数量
+				if ( deviceMaps.containsKey(item.getDevname()) ) {
+					//如果已经存在该设备，则在原有数量的基础上加1
+					Integer  itnum = Integer.parseInt(deviceMaps.get(item.getDevname()));
+					itnum += 1;
+					deviceMaps.put(item.getDevname(), itnum.toString());
+				} else {
+					//如果不存在，则新建立map映射
+					deviceMaps.put(item.getDevname(), "1");
+				}
 			}
 			
 			return ResultUtil.successRes(deviceMaps);
 		}
 	}
+	
 	
 	
 	@Override
@@ -57,28 +67,35 @@ public class DeviceServiceImpl implements DeviceService {
 			//int fac_id = Integer.parseInt(request.getSession().getAttribute(DValueEnum.CHECKED_FACTORY_ID.getValue()).toString());
 			String dname = request.getParameter("dname");
 			int num = Integer.parseInt(request.getParameter("number"));
-			int fac_id = Integer.parseInt(request.getParameter("facid"));
+			int fac_id = Integer.parseInt(request.getParameter("fac_id"));
 			int dev_id = deviceMapper.findDevIdByName(dname);
 			Integer cid = Integer.parseInt(request.getSession().
 					getAttribute(DValueEnum.LOGIN_USER_ID.getValue()).toString());
 			//检测数据合法性
-			if (num < 0 || num > 100) {
+			if (num < 0 || num > 5) {
 				return ResultUtil.invalid_data("非法数据");
 			}
 					
-			Device device = deviceMapper.findDeviceByFacAndDevId(fac_id, dev_id);
+			//Device device = deviceMapper.findDeviceByFacAndDevId(fac_id, dev_id);
 			
 			//如果工厂内没有该设备
-			if (device == null) {
-				device = new Device(dname, num, dev_id);
+//			if (device == null) {
+//				device = new Device(dname, num, dev_id);
+//				device.setFac_id(fac_id);
+//				device.setClient_id(cid);
+//				deviceMapper.insertDevice(device);
+//			} else {
+//				//如果已经有该设备，则增加相应数量
+//				int tmpnum = device.getDev_num();
+//				device.setDev_num(tmpnum + num);
+//				deviceMapper.updateDevice(device);
+//			}
+			
+			for (int i = 0; i < num; i++ ) {
+				Device device = new Device(dname, dev_id);
 				device.setFac_id(fac_id);
 				device.setClient_id(cid);
 				deviceMapper.insertDevice(device);
-			} else {
-				//如果已经有该设备，则增加相应数量
-				int tmpnum = device.getDev_num();
-				device.setDev_num(tmpnum + num);
-				deviceMapper.updateDevice(device);
 			}
 					
 			return ResultUtil.successRes();
@@ -90,29 +107,53 @@ public class DeviceServiceImpl implements DeviceService {
 	
 	
 	@Override
-	public PageResult getDevicesOnPageByFacId(PageRequest pageRequest, HttpServletRequest request) {
-		return PageUtil.getPageResult(pageRequest, getDevicesInfoByFacId(pageRequest, request));
+	public Result<String> deleteDevice(HttpServletRequest request) {
+		Integer dev_id = Integer.parseInt(request.getParameter("dev_id"));
+		Device device = deviceMapper.findDeviceById(dev_id);
+		
+		if (device.getOrdname() != null) {
+			return ResultUtil.data_not_allowedRes("该设备已在进行生产");
+		}
+		
+		deviceMapper.deleteDeviceById(dev_id);
+		return ResultUtil.successRes();
 	}
 	
 	
-	private PageInfo<Device> getDevicesInfoByFacId(PageRequest pageRequest, HttpServletRequest request) {
+	@Override
+	public PageResult getDevicesOnPageByFacId(Map<String, String> requestMap, HttpServletRequest request) {
+		PageRequest pageRequest = new PageRequest();
+		pageRequest.setPageNum(Integer.parseInt(requestMap.get("pageNum")));
+		pageRequest.setPageSize(Integer.parseInt(requestMap.get("pageSize")));
+		
+		return PageUtil.getPageResult(pageRequest, getDevicesInfoByFacId(requestMap, request));
+	}
+	
+	
+	private PageInfo<Device> getDevicesInfoByFacId(Map<String, String> requestMap, HttpServletRequest request) {
 		try {
-			//HttpSession session = request.getSession();
-			int pageNum = pageRequest.getPageNum();
-			int pageSize = pageRequest.getPageSize();
-			//int fac_id = Integer.parseInt(session.getAttribute(DValueEnum.CHECKED_FACTORY_ID.getValue()).toString());
-			int fac_id = pageRequest.getSelectIndex();
+			int pageNum = Integer.parseInt(requestMap.get("pageNum"));
+			int pageSize = Integer.parseInt(requestMap.get("pageSize"));
+			int fac_id = Integer.parseInt(requestMap.get("selectIndex"));
+			String ord_name = null;
+			
+			if (requestMap.containsKey("condition")) {
+				ord_name = requestMap.get("condition");
+			}
 			
 			if (pageNum <= 0 || pageSize <= 0) {
 				throw new IllegalArgumentException("非法分页数据");
 			}
 			
-			PageHelper.startPage(pageNum, pageSize);
-			List<Device> devicesList = deviceMapper.getDeviceByFacIdOnPage(fac_id);
 			
-			//for (Device item : devicesList) {
-			//	System.out.println(item.toString());
-			//}
+			List<Device> devicesList = null;
+			PageHelper.startPage(pageNum, pageSize);
+			if (ord_name == null || ord_name.equals("0")) {
+				devicesList = deviceMapper.getDeviceByFacIdOnPage(fac_id);
+			} else {
+				devicesList = deviceMapper.getDeviceByFacIdAndOrdnameOnPage(fac_id, ord_name);
+			}
+			
 			
 			return new PageInfo<Device>(devicesList);
 		} catch (Exception e) {
@@ -200,8 +241,8 @@ public class DeviceServiceImpl implements DeviceService {
 		
 		deviceMapper.delayStartProduce(sqlstr);
 		
-		System.out.println("delay start");
-		System.out.println(sqlstr);
+		//System.out.println("delay start");
+		//System.out.println(sqlstr);
 		
 		return ResultUtil.successRes();
 	}
@@ -218,7 +259,7 @@ public class DeviceServiceImpl implements DeviceService {
 		
 		deviceMapper.updateDeviceStatusByDevId("进行中", dev_id);
 		
-		System.out.println("straight start");
+		//System.out.println("straight start");
 		
 		return ResultUtil.successRes();
 	}
@@ -247,8 +288,8 @@ public class DeviceServiceImpl implements DeviceService {
 		
 		deviceMapper.delayStopProduce(sqlstr);
 		
-		System.out.println("delay stop");
-		System.out.println(sqlstr);
+		//System.out.println("delay stop");
+		//System.out.println(sqlstr);
 
 		return ResultUtil.successRes();
 	}
@@ -265,7 +306,7 @@ public class DeviceServiceImpl implements DeviceService {
 		
 		deviceMapper.updateDeviceStatusByDevId("未运行", dev_id);
 		
-		System.out.println("straight stop");
+		//System.out.println("straight stop");
 		
 		return ResultUtil.successRes();
 	}

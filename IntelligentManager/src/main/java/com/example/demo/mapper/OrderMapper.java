@@ -1,6 +1,7 @@
 package com.example.demo.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -21,9 +22,13 @@ public interface OrderMapper {
 	
 	void deleteOrderById(Integer id);
 	
+	void deleteOrderByOrdName(String ord_name);
+	
 	void insertOrder(Order order);
 	
 	List<Order> getOrderByFacIdOnPage(Integer id);
+	
+	List<Order> getOrderByFacIdAndProdnameOnPage(@Param("fid")Integer fid, @Param("prodname")String prodname);
 	
 	List<Order> getAllOrders(Integer id);
 	
@@ -31,4 +36,7 @@ public interface OrderMapper {
 	
 	Product getProductByPordName(String name);
 	
+	List<Device> getDevicesByOrdName(String ord_name);
+	
+	List<Map<String, Object>> getAllProductNum();
 }

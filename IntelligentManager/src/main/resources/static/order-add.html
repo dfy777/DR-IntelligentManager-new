@@ -125,6 +125,7 @@
 	        device["玉米面加工设备"] = ["玉米面"];
 	        device["煤枕木生产设备"] = ["枕木"];
 	        
+	        //一台设备最多生产多少个产品
 	        var prodname = new Array();
 	        prodname["有机肥"] = 10;
 	        prodname["腻子粉"] = 30;
@@ -175,6 +176,7 @@
                 $ = layui.jquery;
                 var form = layui.form,
                 layer = layui.layer;
+                var facid = getQueryVariable('facid');
 
                 //自定义验证规则
                 form.verify({
@@ -187,6 +189,7 @@
                             return "请输入纯数字";
                         }
                     	
+                    	//计算最多生产多少个产品
                     	var selectprod = document.getElementById("productlist").value;
                     	var selectdevice = document.getElementById("shipping").value;
                     	if (device_manage[selectdevice] != null && prodname[selectprod] != null) {
@@ -199,13 +202,17 @@
                 });
                 
                 $.ajax({
-                    type:'get',
+                    type:'post',
                     url:'/home/factory/device/find-deviceinfo',
+                    data: {
+                        "fac_id":facid
+                    },
                     success: function (res) {
                         var successData = JSON.stringify(res);
                         
 
                         if (res.code == 20000) {
+                        	//根据返回的名字确定该设备的数量,记录在device_manage中
                         	var devicetypes = document.getElementById("shipping");
                         	for (i = 0; i < devicename.length; i++) { 
                         	    if (res.data[devicename[i]] != null) {

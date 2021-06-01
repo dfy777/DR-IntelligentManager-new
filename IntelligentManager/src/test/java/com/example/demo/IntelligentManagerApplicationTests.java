@@ -17,6 +17,7 @@ import com.example.demo.mapper.OrderMapper;
 import com.example.demo.pojo.MyCommonFunc;
 import com.example.demo.pojo.Order;
 import com.example.demo.pojo.PatternUtil;
+import com.example.demo.service.IndexService;
 
 @MapperScan("com.example.demo.mapper")
 @SpringBootTest
@@ -25,11 +26,14 @@ class IntelligentManagerApplicationTests {
 	//@Autowired
 	//private RedisTemplate<String, Object> redisTemplate;
 	
-	@Autowired
-	private DeviceMapper deviceMapper;
+	//@Autowired
+	//private DeviceMapper deviceMapper;
 	
 	@Autowired
 	private OrderMapper orderMapper;
+	
+	@Autowired
+	IndexService indexService;
 
 	
 	/**
@@ -76,7 +80,6 @@ class IntelligentManagerApplicationTests {
 	/**
 	 * 测试device的创建事件的sql语句
 	 */
-	@Test
 	public void deviceSqlTest() {
 	     
 	    String rdname = MyCommonFunc.getRandomString(6);
@@ -92,7 +95,22 @@ class IntelligentManagerApplicationTests {
 				+ "DO CALL start_produce(" + num.toString() + ");";
 		
 		
-		deviceMapper.delayStartProduce(sqlstr);
-		System.out.println(sqlstr);
+		//deviceMapper.delayStartProduce(sqlstr);
+		//System.out.println(sqlstr);
+	}
+	
+	
+	//@Test
+	public void getProgreeAndStatusTest() {
+		System.out.println(indexService.showIndexDeviceInfo());
+	}
+	
+	@Test
+	public void generalTest() {
+		Integer ii = 123;
+		Double ff = 0 / 100D;
+		ff *= ii;
+		ii = ff.intValue();
+		System.out.println(ii);
 	}
 }

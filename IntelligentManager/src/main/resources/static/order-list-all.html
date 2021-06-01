@@ -33,12 +33,19 @@
 
                     <div class="layui-card">
                         <div class="layui-card-header">
-                            <button class="layui-btn layui-btn-danger" onclick="delAll()">
+                            <!-- <button class="layui-btn layui-btn-danger" onclick="delAll()">
                                 <i class="layui-icon"></i>删除
                             </button>
                             <button class="layui-btn" onclick="xadmin.open('添加订单','./order-add.html',800,600)">
-                                <i class="layui-icon"></i>添加</button>
+                                <i class="layui-icon"></i>添加</button> -->
+                            <div class="demoTable">
+                                搜索产品：
+                                <div class="layui-inline">
+                                  <input class="layui-input" name="id" id="demoReload" autocomplete="off">
+                                </div>
+                                <button class="layui-btn" data-type="reload">搜索</button>
                             </div>
+                        </div>
                         <div class="layui-card-body ">
                         	<table id="order-tb" lay-filter="ord-tb">                               
                             </table>                           

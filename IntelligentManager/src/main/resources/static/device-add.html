@@ -45,7 +45,7 @@
                             autocomplete="off" class="layui-input">
                         </div>
                         <div class="layui-form-mid layui-word-aux">
-                            <span class="x-red">*</span>最多同时增加100台设备
+                            <span class="x-red">*</span>最多同时增加5台设备
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -84,8 +84,8 @@
                         if (isNaN(value)) {
                             return "请输入纯数字";
                         }
-                        if (parseInt(value)==0 || parseInt(value)>100) {
-                            return "一次最多增加100台"
+                        if (parseInt(value)==0 || parseInt(value)>5) {
+                            return "一次最多增加5台"
                         }
                     },
                 });

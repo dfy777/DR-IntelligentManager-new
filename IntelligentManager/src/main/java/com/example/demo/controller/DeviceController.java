@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.pojo.PageRequest;
@@ -38,13 +39,24 @@ public class DeviceController {
 	 * @param request
 	 * @return
 	 */
-	@GetMapping("/home/factory/device/find-deviceinfo")
+	@PostMapping("/home/factory/device/find-deviceinfo")
 	@ResponseBody
 	public Result<Map<String, String>> findDeviceinfo(HttpServletRequest request) {
 		return deviceService.findDeviceinfo(request);
 	}
 	
 	
+	
+	/**
+	 * 删除设备
+	 * @param request
+	 * @return
+	 */
+	@PostMapping("/home/factory/device/show/delete-device")
+	@ResponseBody
+	public Result<String> deleteDevice(HttpServletRequest request) {
+		return deviceService.deleteDevice(request);
+	}
 	
 	@PostMapping("/home/factory/device/add")
 	@ResponseBody
@@ -61,9 +73,11 @@ public class DeviceController {
 	 */
 	@PostMapping("/home/factory/device/show/select_byfacid")
 	@ResponseBody
-	public PageResult getDeviceOnPageByFacId(@RequestBody PageRequest pageRequest, HttpServletRequest request) {
+	public PageResult getDeviceOnPageByFacId(@RequestBody Map<String, String> requestMap, HttpServletRequest request) {
 		//System.out.println(pageRequest.toString());
-		return deviceService.getDevicesOnPageByFacId(pageRequest, request);
+		//Integer selectFacId = Integer.parseInt(request.getParameter("selectIndex"));
+		System.out.println(requestMap.toString());
+		return deviceService.getDevicesOnPageByFacId(requestMap, request);
 	}
 	
 	
@@ -134,12 +148,13 @@ public class DeviceController {
 	
 	
 	/**
-	 * 用图标显示设备生产状况的方法
+	 * 用图表显示设备生产状况的方法
 	 */
 	@GetMapping("/home/factory/device/show/show-echarts")
 	@ResponseBody
 	public Result<Map<String, String>> showDeviceProgressOnCharts(HttpServletRequest request) {
 		return deviceService.showDeviceProgressOnCharts(request);
 	}
+	
 }
 

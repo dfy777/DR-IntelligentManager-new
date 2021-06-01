@@ -29,6 +29,11 @@ public interface DeviceService {
 	
 	
 	/**
+	 * 删除设备
+	 */
+	Result<String> deleteDevice(HttpServletRequest request);
+	
+	/**
 	 * 延时启动设备
 	 * @return
 	 */
@@ -60,7 +65,7 @@ public interface DeviceService {
 	 * @param request
 	 * @return
 	 */
-	PageResult getDevicesOnPageByFacId(PageRequest pageRequest, HttpServletRequest request);
+	PageResult getDevicesOnPageByFacId(Map<String, String> requestMap, HttpServletRequest request);
 	
 	
 	/**

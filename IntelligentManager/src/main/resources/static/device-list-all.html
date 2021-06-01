@@ -31,8 +31,15 @@
                 <div class="layui-col-md12">
                     <div class="layui-card">
                         <div class="layui-card-header">
-                            <button class="layui-btn layui-btn-danger" onclick="delAll()">
-                                <i class="layui-icon"></i>删除</button>
+                            <!-- <button class="layui-btn layui-btn-danger" onclick="delAll()">
+                                <i class="layui-icon"></i>删除</button> -->
+                            <div class="demoTable">
+                                搜索订单号：
+                                <div class="layui-inline">
+                                  <input class="layui-input" name="id" id="demoReload" autocomplete="off">
+                                </div>
+                                <button class="layui-btn" data-type="reload">搜索</button>
+                            </div>
                         </div>
                         <div class="layui-card-body ">
                         	<table id="device-tb" lay-filter="dev-tb">
@@ -93,7 +100,7 @@
                     {field:'fac_id', title: '工厂编号', align:'center', sort: true},
                     {field:'cid', align:'center', title: '设备编号'},
                     {field:'devname', align:'center', title: '设备'},
-                    {field:'dev_num', align:'center', title: '数量'},
+                    {field:'prod_num', align:'center', title: '生产数量'},
                     {field:'ordname', width:200, align:'center', title: '订单编号'},
                     {field:'prodname', align:'center', title: '产品'},
                     {field:'status', align:'center', title: '生产状态'},

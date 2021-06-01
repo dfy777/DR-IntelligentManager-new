@@ -1,0 +1,7 @@
+package com.example.demo.service;
+
+import com.example.demo.pojo.Result;
+
+public interface IndexService {
+	Result<List<Integer>> showIndexDeviceInfo();
+}

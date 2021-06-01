@@ -2,6 +2,7 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.demo.mapper.DeviceMapper">
+
 	
 	<delete id="deleteDeviceById" parameterType="Integer">
         delete from bishe.device_manage where cid=#{id}
@@ -51,18 +52,23 @@
 	
 	
 	<select id="findDeviceByFacAndDevId" resultType="com.example.demo.pojo.Device">
-		select * from bishe.device_manage where fac_id=#{fid} and dev_id=#{did}
+		select * from bishe.device_manage where fac_id=#{fid} and dev_id=#{did} and ISNULL(ord_id)=1
 	</select>
 
 
-	<select id="findDevicesByFacId" resultType="com.example.demo.pojo.Device">
-		select * from bishe.device_manage where fac_id=#{fid}
+	<select id="findDevicesByFacIdWithOrdIdNull" resultType="com.example.demo.pojo.Device">
+		select * from bishe.device_manage where fac_id=#{fid} and ISNULL(ord_id)=1
 	</select>
 	
 	
 	<select id="getDeviceByFacIdOnPage" parameterType="Integer" 
 			resultType="com.example.demo.pojo.Device">
 		select * from bishe.device_manage where fac_id=#{id}
+	</select>
+	
+	
+	<select id='getDeviceByFacIdAndOrdnameOnPage' resultType="com.example.demo.pojo.Device">
+		select * from bishe.device_manage where fac_id=#{fid} and ordname=#{ordname}
 	</select>
 	
 	
@@ -85,4 +91,26 @@
 		update bishe.device_manage set status=#{dstatus} where cid=#{dev_id}
 	</update>
 	
+	
+	<resultMap id="ProgressAndStatusMap" type="java.util.HashMap">
+	    <id column="cid" property="deviceId" jdbcType="INTEGER" />
+	    <result column="progress" property="progress" jdbcType="INTEGER" />
+	    <result column="status" property="status" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="getAllProgressAndStatus" resultMap="ProgressAndStatusMap">
+		select cid, progress, status from bishe.device_manage
+	</select>
+	
+	
+	<resultMap id="ProgressAndProdnumMap" type="java.util.HashMap">
+	    <id column="cid" property="deviceId" jdbcType="INTEGER" />
+	    <result column="progress" property="progress" jdbcType="INTEGER" />
+	    <result column="prod_num" property="num" jdbcType="INTEGER" />
+		<result column="prodname" property="name" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="getAllProgressAndProdNum" resultMap="ProgressAndProdnumMap">
+		select cid, progress, prod_num, prodname from bishe.device_manage where ISNULL(ordname)=0
+	</select>
 </mapper>

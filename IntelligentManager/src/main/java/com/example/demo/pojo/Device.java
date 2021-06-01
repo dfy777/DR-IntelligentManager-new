@@ -2,6 +2,8 @@ package com.example.demo.pojo;
 
 import java.io.Serializable;
 
+import com.example.demo.service.DeviceService;
+
 public class Device implements Serializable {
 
 	/**
@@ -23,14 +25,38 @@ public class Device implements Serializable {
 	private String prodname;
 	private Integer progress;
 	
+	public Device() {
+		
+	}
+	
 	
 	public Device(String devname, int devnum, int devid) {
 		this.dev_id = devid;
 		this.dev_num = devnum;
 		this.devname = devname;
 		
+		this.status = "闲置中";
+		this.progress = 0;
+	}
+	
+	public Device(String devname, int devid) {
+		this.dev_id = devid;
+		this.devname = devname;
+		this.dev_num = 1;
+		
+		this.status = "闲置中";
+		this.progress = 0;
+	}
+	
+	
+	public void clearDevice() {
+		this.ord_id = null;
+		this.prod_id = null;
+		this.prod_num = null;
+		this.ordname = null;
 		this.status = "未运行";
 		this.progress = 0;
+		this.prodname = null;
 	}
 	
 	
