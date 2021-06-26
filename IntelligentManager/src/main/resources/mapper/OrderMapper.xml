@@ -65,8 +65,14 @@
 		select * from bishe.order where fac_id=#{fid} and prod_name=#{prodname}
 	</select>
 	
+	
 	<select id="getAllOrders" resultType="com.example.demo.pojo.Order">
 		select * from bishe.order where client_id=#{id}
+	</select>
+	
+	
+	<select id="getAllOrdersByProdname" resultType="com.example.demo.pojo.Order">
+		select * from bishe.order where client_id=#{id} and prod_name=#{prodname}
 	</select>
 	
 	

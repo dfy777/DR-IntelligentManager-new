@@ -164,28 +164,40 @@ public class DeviceServiceImpl implements DeviceService {
 	
 	
 	@Override
-	public PageResult getAllDevicesOnPage(PageRequest pageRequest, HttpServletRequest request) {
-		return PageUtil.getPageResult(pageRequest, getAllDevicesInfo(pageRequest, request));
+	public PageResult getAllDevicesOnPage(Map<String, String> requestMap, HttpServletRequest request) {
+		PageRequest pageRequest = new PageRequest();
+		pageRequest.setPageNum(Integer.parseInt(requestMap.get("pageNum")));
+		pageRequest.setPageSize(Integer.parseInt(requestMap.get("pageSize")));
+		
+		return PageUtil.getPageResult(pageRequest, getAllDevicesInfo(requestMap, request));
 	}
 	
 	
-	private PageInfo<Device> getAllDevicesInfo(PageRequest pageRequest, HttpServletRequest request) {
+	private PageInfo<Device> getAllDevicesInfo(Map<String, String> requestMap, HttpServletRequest request) {
 		try {
-			int pageNum = pageRequest.getPageNum();
-			int pageSize = pageRequest.getPageSize();
+			int pageNum = Integer.parseInt(requestMap.get("pageNum"));
+			int pageSize = Integer.parseInt(requestMap.get("pageSize"));
 			Integer cid = Integer.parseInt(request.getSession().
 					getAttribute(DValueEnum.LOGIN_USER_ID.getValue()).toString());
+			String ord_name = null;
+			
+			if (requestMap.containsKey("condition")) {
+				ord_name = requestMap.get("condition");
+			}
 			
 			if (pageNum <= 0 || pageSize <= 0) {
 				throw new IllegalArgumentException("非法分页数据");
 			}
 			
-			PageHelper.startPage(pageNum, pageSize);
-			List<Device> devicesList = deviceMapper.getAllDevices(cid);
 			
-			//for (Device item : devicesList) {
-			//	System.out.println(item.toString());
-			//}
+			
+			List<Device> devicesList = null;
+			PageHelper.startPage(pageNum, pageSize);
+			if (ord_name == null || ord_name.equals("0")) {
+				devicesList = deviceMapper.getAllDevices(cid);
+			} else {
+				devicesList = deviceMapper.getAllDevicesByOrdname(cid, ord_name);
+			}
 			
 			return new PageInfo<Device>(devicesList);
 		} catch (Exception e) {
@@ -329,4 +341,23 @@ public class DeviceServiceImpl implements DeviceService {
 		
 		return ResultUtil.successRes(deviceMaps);
 	}
+	
+	
+	@Override
+	public Result<String> deliveDevice(HttpServletRequest request) {
+		Integer dev_id = Integer.parseInt(request.getParameter("dev_id"));
+		Device device = deviceMapper.findDeviceById(dev_id);
+		
+		if (device == null) {
+			return ResultUtil.data_not_foundRes("未找到设备");
+		}
+		
+		if (device.getStatus() != "待交付" || device.getProgress() != 100) {
+			return ResultUtil.data_not_allowedRes("交付失败");
+		}
+		
+		deviceMapper.deleteDeviceById(dev_id);
+		return ResultUtil.successRes();
+	}
+	
 }

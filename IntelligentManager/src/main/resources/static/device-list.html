@@ -65,12 +65,15 @@
     -->
     
     <script type="text/html" id="operate-ba">
-    	{{#  if(d.status == "未运行"){ }}
+    	{{#  if(d.status == "闲置中"){ }}
+		<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除</a>
+		{{#  } else if(d.status == "未运行"){ }}
     	<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="start">开始生产</a>
     	{{#  } else if(d.status == "进行中"){ }}
     	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="stop">停止</a>
-    	{{#  } }}
-		<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除</a>
+    	{{#  } else if(d.status == "待交付"){ }}
+		<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="deliver">交付</a>
+		{{#  } }}
 	</script>
 	
 	
@@ -248,7 +251,45 @@
                                         xadmin.father_reload();
                                     });
                         		} else if (res.data == 30006) {
-                        			layer.alert("删除失败，该订单已开始生产", {
+                        			layer.alert("删除失败，该设备已开始生产", {
+                                        icon: 6
+                                    },
+                                    function() {
+                                    	//关闭当前frame
+                                        xadmin.close();
+                                        // 可以对父窗口进行刷新 
+                                        xadmin.father_reload();
+                                    });
+                        		}
+                        	},
+                            error: function (res) {
+                            	var resData = JSON.stringify(res)
+                                //alert("error:通信错误");
+                            	alert(resData);
+                            }
+                        })
+                  	});	
+                } else if (obj.event == 'deliver') {
+                	layer.confirm('要删除设备吗', function(index) {
+                  		$.ajax({
+                        	type:'post',
+                        	url:'/home/factory/device/show/deliver-device',
+                        	data:{
+                  				"dev_id":data.cid
+                            },
+                            success: function (res){
+                        		if (res.data == 20000) {
+                        			layer.alert("交付成功", {
+                                        icon: 6
+                                    },
+                                    function() {
+                                    	//关闭当前frame
+                                        xadmin.close();
+                                        // 可以对父窗口进行刷新 
+                                        xadmin.father_reload();
+                                    });
+                        		} else if (res.data == 30006) {
+                        			layer.alert("交付失败", {
                                         icon: 6
                                     },
                                     function() {

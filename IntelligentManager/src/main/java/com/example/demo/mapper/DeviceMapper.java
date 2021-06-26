@@ -29,6 +29,8 @@ public interface DeviceMapper {
 	
 	List<Device> getAllDevices(Integer id);
 	
+	List<Device> getAllDevicesByOrdname(@Param("cid")Integer cid, @Param("ordname")String ordname);
+	
 	List<Device> findDeviceByFacAndDevId(@Param("fid")Integer fid, @Param("did")Integer did);
 	
 	List<Device> findDevicesByFacIdWithOrdIdNull(@Param("fid")Integer fid);

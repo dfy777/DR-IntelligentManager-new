@@ -32,6 +32,8 @@ public interface OrderMapper {
 	
 	List<Order> getAllOrders(Integer id);
 	
+	List<Order> getAllOrdersByProdname(@Param("cid")Integer cid, @Param("prodname")String prodname);
+	
 	Integer getProdIdByPordName(String name);
 	
 	Product getProductByPordName(String name);

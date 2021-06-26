@@ -60,8 +60,8 @@ public class OrderController {
 	
 	@PostMapping("/home/factory/order/show/select_all")
 	@ResponseBody
-	public PageResult getAllOrderByPage(@RequestBody PageRequest pageRequest, HttpServletRequest request) {
-		return orderService.getAllOrdersOnPage(pageRequest, request);
+	public PageResult getAllOrderByPage(@RequestBody Map<String, String> requestMap, HttpServletRequest request) {
+		return orderService.getAllOrdersOnPage(requestMap, request);
 	}
 	
 	
@@ -76,5 +76,12 @@ public class OrderController {
 	public Result<Map<String, String>> showDeviceProgressOnCharts(HttpServletRequest request) {
 		//return orderService.showDeviceProgressOnCharts(request);
 		return null;
+	}
+	
+	
+	@PostMapping("/home/factory/order/show/deliver-order")
+	@ResponseBody
+	public Result<String> deliveOrder(HttpServletRequest request) {
+		return orderService.deliveResultOrder(request);
 	}
 }

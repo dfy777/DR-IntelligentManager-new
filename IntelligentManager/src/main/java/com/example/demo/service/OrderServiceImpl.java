@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.demo.mapper.DeviceMapper;
 import com.example.demo.mapper.OrderMapper;
@@ -140,24 +141,38 @@ public class OrderServiceImpl implements OrderService {
 	
 	
 	@Override
-	public PageResult getAllOrdersOnPage(PageRequest pageRequest, HttpServletRequest request) {
-		return PageUtil.getPageResult(pageRequest, getAllOrdersInfo(pageRequest, request));
+	public PageResult getAllOrdersOnPage(@RequestBody Map<String, String> requestMap, HttpServletRequest request) {
+		PageRequest pageRequest = new PageRequest();
+		pageRequest.setPageNum(Integer.parseInt(requestMap.get("pageNum")));
+		pageRequest.setPageSize(Integer.parseInt(requestMap.get("pageSize")));
+		
+		return PageUtil.getPageResult(pageRequest, getAllOrdersInfo(requestMap, request));
 	}
 	
 	
-	private PageInfo<Order> getAllOrdersInfo(PageRequest pageRequest, HttpServletRequest request) {
+	private PageInfo<Order> getAllOrdersInfo(@RequestBody Map<String, String> requestMap, HttpServletRequest request) {
 		try {
-			int pageNum = pageRequest.getPageNum();
-			int pageSize = pageRequest.getPageSize();
+			int pageNum = Integer.parseInt(requestMap.get("pageNum"));
+			int pageSize = Integer.parseInt(requestMap.get("pageSize"));
+			String prod_name = null;
 			Integer cid = Integer.parseInt(request.getSession().
 					getAttribute(DValueEnum.LOGIN_USER_ID.getValue()).toString());
+			
+			if (requestMap.containsKey("condition")) {
+				prod_name = requestMap.get("condition");
+			}
 			
 			if (pageNum <= 0 || pageSize <= 0) {
 				throw new IllegalArgumentException("非法分页数据");
 			}
 			
-			PageHelper.startPage(pageNum, pageSize);		
-			List<Order> ordersList = orderMapper.getAllOrders(cid);
+			List<Order> ordersList = null;
+			PageHelper.startPage(pageNum, pageSize);
+			if (prod_name == null || prod_name.equals("0")) {
+				ordersList = orderMapper.getAllOrders(cid);
+			} else {
+				ordersList = orderMapper.getAllOrdersByProdname(cid, prod_name);
+			}
 			
 			return new PageInfo<Order>(ordersList);
 		} catch (IllegalArgumentException e1) {
@@ -307,4 +322,25 @@ public class OrderServiceImpl implements OrderService {
 		orderMapper.updateOrder(order);
 		return ResultUtil.successRes();
 	}
+	
+	
+	
+	@Override
+	public Result<String> deliveResultOrder(HttpServletRequest request) {
+		String ord_name = request.getParameter("ord_name");
+		
+		Order order = orderMapper.getOrderByOrdName(ord_name);
+		
+		if (order == null) {
+			return ResultUtil.null_dataRes("未找到订单");
+		}
+		
+		if (order.getProgress() != 100 || order.getStatus() != "待交付") {
+			return ResultUtil.data_not_allowedRes("交付失败");
+		}
+		
+		orderMapper.deleteOrderByOrdName(ord_name);
+		return ResultUtil.successRes();
+	}
+	
 }

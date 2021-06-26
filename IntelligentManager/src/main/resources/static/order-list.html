@@ -73,7 +73,11 @@
 	</script>
 	
 	<script type="text/html" id="barDemo">
+		{{#  if(d.progress < 100){ }}
 		<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除</a>
+		{{#  } else if(d.status == 100){ }}
+		<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="deliver">交付</a>
+		{{#  } }}
     </script>
     
     
@@ -156,20 +160,8 @@
             table.on('tool(ord-tb)', function(obj){
 				var data = obj.data;
 				if (obj.event == 'chart') {
-					$.ajax({
-		            	type:'post',
-		            	url:'/home/factory/device/show/select-device',
-		            	data:{
-		      				"dev_id":data.dev_id
-		                },
-		            	success: function (res){
-		            		var url = '/chart-yuan-order.html?ordname=' + data.ord_name;
-		            		xadmin.open('表格',url,600,600)
-		            	},
-		                error: function (res) {
-		                    alert("error:通信错误");
-		                }
-		            })
+					var url = '/chart-yuan-order.html?ordname=' + data.ord_name;
+            		xadmin.open('表格',url,600,600)
 		     	} else if(obj.event == 'delete') {
 		     		layer.confirm('确定要删除订单吗？', function(obj) {
                   		$.ajax({
@@ -191,6 +183,44 @@
                                     });
                         		} else if (res.data == 30006) {
                         			layer.alert("删除失败，该订单已开始生产", {
+                                        icon: 6
+                                    },
+                                    function() {
+                                    	//关闭当前frame
+                                        xadmin.close();
+                                        // 可以对父窗口进行刷新 
+                                        xadmin.father_reload();
+                                    });
+                        		}
+                        	},
+                            error: function (res) {
+                            	var resData = JSON.stringify(res)
+                                //alert("error:通信错误");
+                            	alert(resData);
+                            }
+                        })
+                  	});	
+		     	} else if(obj.event == 'deliver') {
+		     		layer.confirm('确定要交付订单吗？', function(obj) {
+                  		$.ajax({
+                        	type:'post',
+                        	url:'/home/factory/order/show/deliver-order',
+                        	data:{
+                        		"ord_name":data.ord_name
+                            },
+                        	success: function (res){
+                        		if (res.data == 20000) {
+                        			layer.alert("交付成功", {
+                                        icon: 6
+                                    },
+                                    function() {
+                                    	//关闭当前frame
+                                        xadmin.close();
+                                        // 可以对父窗口进行刷新 
+                                        xadmin.father_reload();
+                                    });
+                        		} else if (res.data == 30006) {
+                        			layer.alert("交付失败", {
                                         icon: 6
                                     },
                                     function() {

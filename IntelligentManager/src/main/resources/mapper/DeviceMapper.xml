@@ -75,6 +75,11 @@
 	<select id="getAllDevices" resultType="com.example.demo.pojo.Device">
 		select * from bishe.device_manage where client_id=#{id}
 	</select>
+	
+	
+	<select id="getAllDevicesByOrdname" resultType="com.example.demo.pojo.Device">
+		select * from bishe.device_manage where client_id=#{cid} and ordname=#{ordname}
+	</select>
 
 
 	<select id="delayStartProduce" parameterType="String" resultType="java.util.Map">

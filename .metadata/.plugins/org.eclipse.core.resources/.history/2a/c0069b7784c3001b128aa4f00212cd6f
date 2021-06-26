@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.OrderMapper">
+    <delete id = "deleteOrderById" parameterType="Integer">
+        delete from bishe.order where order_id=#{id}
+    </delete>
+
+	
+	<delete id="deleteOrderByOrdName" parameterType="String">
+		delete from bishe.order where ord_name=#{ord_name}
+	</delete>
+
+
+    <select id="getOrderById" parameterType="Integer" resultType="com.example.demo.pojo.Order">
+        select * from bishe.order where order_id=#{id}
+    </select>
+
+
+	<select id="getOrderByOrdName" parameterType="String" resultType="com.example.demo.pojo.Order">
+		select * from bishe.order where ord_name=#{ord_name}
+	</select>
+	
+
+    <update id="updateOrder" parameterType="com.example.demo.pojo.Order">
+        update bishe.order set
+        fac_id=#{fac_id},
+        client_id=#{client_id},
+		prodplan_id=#{prodplan_id},
+		dev_id=#{dev_id},
+		prod_id=#{prod_id},
+		prod_num=#{prod_num},
+		prod_name=#{prod_name},
+		progress=#{progress},
+		pay_status=#{pay_status},
+		price=#{price},
+        ord_name=#{ord_name},
+        description=#{description},
+        status=#{status},
+		pay_func=#{pay_func},
+		receiver=#{receiver},
+		phone=#{phone},
+		location=#{location}
+        where order_id=#{order_id}
+    </update>
+
+
+    <insert id="insertOrder" parameterType="com.example.demo.pojo.Order" 
+			keyProperty="order_id" useGeneratedKeys="true">
+        insert into bishe.order(fac_id,client_id,prodplan_id,dev_id,prod_num,prod_id,
+			ord_name,price,description,status,pay_status,pay_func,
+			receiver,phone,location,prod_name,progress)
+        values(#{fac_id},#{client_id},#{prodplan_id},#{dev_id},#{prod_num},#{prod_id},
+			#{ord_name},#{price},#{description},#{status},#{pay_status},
+			#{pay_func},#{receiver},#{phone},#{location},#{prod_name},#{progress})
+    </insert>
+
+
+	<select id="getOrderByFacIdOnPage" parameterType="Integer" 
+			resultType="com.example.demo.pojo.Order">
+		select * from bishe.order where fac_id=#{id}
+	</select>
+
+	
+	<select id='getOrderByFacIdAndProdnameOnPage' resultType="com.example.demo.pojo.Order">
+		select * from bishe.order where fac_id=#{fid} and prod_name=#{prodname}
+	</select>
+	
+	<select id="getAllOrders" resultType="com.example.demo.pojo.Order">
+		select * from bishe.order where client_id=#{id}
+	</select>
+	
+	
+	<select id="getDevicesByOrdName" parameterType="String"
+			resultType="com.example.demo.pojo.Device">
+		select * from bishe.device_manage where ordname=#{ord_name}
+	</select>
+
+	<select id="getProdIdByPordName" parameterType="String" resultType="Integer">
+		select product_id from bishe.product where prod_name=#{name}
+	</select>
+
+
+	<select id="getProductByPordName" parameterType="String" resultType="com.example.demo.pojo.Product">
+		select * from bishe.product where prod_name=#{name}
+	</select>
+	
+	
+	<resultMap id="ProductNumMap" type="java.util.HashMap">
+	    <id column="order_id" property="id" jdbcType="INTEGER" />
+	    <result column="prod_num" property="num" jdbcType="INTEGER" />
+	    <result column="prod_name" property="name" jdbcType="VARCHAR" />
+		<result column="progress" property="progress" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="getAllProductNum" resultMap="ProductNumMap">
+		select order_id, prod_num, prod_name, progress from bishe.order
+	</select>
+</mapper>

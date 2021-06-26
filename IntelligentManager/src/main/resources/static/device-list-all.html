@@ -63,11 +63,15 @@
     -->
     
     <script type="text/html" id="operate-ba">
-    	{{#  if(d.status == "未运行"){ }}
+    	{{#  if(d.status == "闲置中"){ }}
+		<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除</a>
+		{{#  } else if(d.status == "未运行"){ }}
     	<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="start">开始生产</a>
     	{{#  } else if(d.status == "进行中"){ }}
     	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="stop">停止</a>
-    	{{#  } }}
+    	{{#  } else if(d.status == "待交付"){ }}
+		<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="deliver">交付</a>
+		{{#  } }}
 	</script>
 
     
@@ -92,6 +96,7 @@
                 url:"/home/factory/device/show/select_all",
                 method: 'post',
                 dataType:'json',
+                where:{condition:"0"},
                 contentType: 'application/json;charset=UTF-8',
                 page: true, //开启分页
                 limit: 3,
@@ -132,8 +137,9 @@
                         "count": res.totalSize, //解析数据长度
                         "data": res.content //解析数据列表
                     };
-                }
-                ,done:function (res,currentCount) {
+                },
+                id: 'testReload',
+                done:function (res,currentCount) {
     				//***重点***：table渲染完成后渲染element进度条
                     element.render()
                 }
@@ -189,9 +195,106 @@
                             alert("error:通信错误");
                         }
                     })
+                } else if (obj.event == 'delete') {
+                	layer.confirm('要删除设备吗', function(index) {
+                  		$.ajax({
+                        	type:'post',
+                        	url:'/home/factory/device/show/delete-device',
+                        	data:{
+                  				"dev_id":data.cid
+                            },
+                            success: function (res){
+                        		if (res.data == 20000) {
+                        			layer.alert("删除成功", {
+                                        icon: 6
+                                    },
+                                    function() {
+                                    	//关闭当前frame
+                                        xadmin.close();
+                                        // 可以对父窗口进行刷新 
+                                        xadmin.father_reload();
+                                    });
+                        		} else if (res.data == 30006) {
+                        			layer.alert("删除失败，该设备已开始生产", {
+                                        icon: 6
+                                    },
+                                    function() {
+                                    	//关闭当前frame
+                                        xadmin.close();
+                                        // 可以对父窗口进行刷新 
+                                        xadmin.father_reload();
+                                    });
+                        		}
+                        	},
+                            error: function (res) {
+                            	var resData = JSON.stringify(res)
+                                //alert("error:通信错误");
+                            	alert(resData);
+                            }
+                        })
+                  	});	
+                } else if (obj.event == 'deliver') {
+                	layer.confirm('要删除设备吗', function(index) {
+                  		$.ajax({
+                        	type:'post',
+                        	url:'/home/factory/device/show/deliver-device',
+                        	data:{
+                  				"dev_id":data.cid
+                            },
+                            success: function (res){
+                        		if (res.data == 20000) {
+                        			layer.alert("交付成功", {
+                                        icon: 6
+                                    },
+                                    function() {
+                                    	//关闭当前frame
+                                        xadmin.close();
+                                        // 可以对父窗口进行刷新 
+                                        xadmin.father_reload();
+                                    });
+                        		} else if (res.data == 30006) {
+                        			layer.alert("交付失败", {
+                                        icon: 6
+                                    },
+                                    function() {
+                                    	//关闭当前frame
+                                        xadmin.close();
+                                        // 可以对父窗口进行刷新 
+                                        xadmin.father_reload();
+                                    });
+                        		}
+                        	},
+                            error: function (res) {
+                            	var resData = JSON.stringify(res)
+                                //alert("error:通信错误");
+                            	alert(resData);
+                            }
+                        })
+                  	});	
                 }
         	});
             
+            
+            var $ = layui.$, active = {
+       			reload: function(){
+       				var demoReload = $('#demoReload');	//得到搜索框里已输入的数据   
+       				var selectval = demoReload.val();
+       				if (demoReload.val() == "") {
+       					selectval = "0"
+       				}
+       				
+               	    //执行重载
+       				table.reload('testReload', {
+                   	    page: { curr: 1 },//重新从第 1 页开始
+       					where: { condition : selectval }		//在表格中进行搜索
+               		});
+       			}
+               };
+               	  
+       		$('.demoTable .layui-btn').on('click', function(){
+               	var type = $(this).data('type');
+               	active[type] ? active[type].call(this) : '';
+       		}); 
         });
     
     	

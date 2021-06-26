@@ -74,7 +74,7 @@ public interface DeviceService {
 	 * @param request
 	 * @return
 	 */
-	PageResult getAllDevicesOnPage(PageRequest pageRequest, HttpServletRequest request);
+	PageResult getAllDevicesOnPage(Map<String, String> requestMap, HttpServletRequest request);
 	
 	
 	/**
@@ -89,4 +89,7 @@ public interface DeviceService {
 	 * @return
 	 */
 	Result<Map<String, String>> showDeviceProgressOnCharts(HttpServletRequest request);
+	
+	
+	Result<String> deliveDevice(HttpServletRequest request);
 }
